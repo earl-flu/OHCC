@@ -56,7 +56,7 @@ export default {
         };
     },
     created() {
-        this.setInitialDateFrom()
+        this.setInitialDateFrom();
         this.setActivities(this.dateFrom, this.dateTo);
     },
 
@@ -70,7 +70,7 @@ export default {
                 .then(res => {
                     //set activities data
                     this.activities = res.data.data;
-                    
+
                     //set singleActivityPerDay data
                     const activities = this.activities;
                     this.singleActivityPerDay = this.setSingleActivityPerDay(
@@ -84,16 +84,42 @@ export default {
                 });
         },
         fillData() {
-            const { dates, ward_beds } = this.mapDateAndWard(this.checked);
+            const dates = this.mapActivitiesByDate(this.checked);
+            const ward_beds = this.mapActivitiesByOccupiedBed(
+                this.checked,
+                "occupied_ward"
+            );
+            const iso_beds = this.mapActivitiesByOccupiedBed(
+                this.checked,
+                "occupied_isolation"
+            );
+            const icu_beds = this.mapActivitiesByOccupiedBed(
+                this.checked,
+                "occupied_icu"
+            );
             this.datacollection = {
                 labels: dates,
                 datasets: [
                     {
                         label: "Occupied Ward",
-                        // backgroundColor: "#f87979",
-                        borderColor: "rgb(75, 192, 192)",
+                        // backgroundColor: "#f87950",
+                        borderColor: "#B5DFCA",
                         fill: false,
                         data: ward_beds
+                    },
+                    {
+                        label: "Occupied Isolation",
+                        // backgroundColor: "#f66979",
+                        borderColor: "#467599 ",
+                        fill: false,
+                        data: iso_beds
+                    },
+                    {
+                        label: "Occupied ICU",
+                        // backgroundColor: "#f55979",
+                        borderColor: "#AF5D63",
+                        fill: false,
+                        data: icu_beds
                     }
                 ]
             };
@@ -105,25 +131,30 @@ export default {
             this.dateFrom = new Date(sevenDaysAgo);
         },
 
-        mapDateAndWard(isChecked) {
-            let dates, ward_beds;
-            //if have datefrom and dateTo then filter the arrOfObj
+        mapActivitiesByOccupiedBed(isChecked, bedType) {
+            let beds;
+            if (isChecked) {
+                beds = this.singleActivityPerDay
+                    .map(a => a.attributes[bedType])
+                    .reverse();
+                return beds;
+            }
+
+            beds = this.activities.map(a => a.attributes[bedType]).reverse();
+            return beds;
+        },
+
+        mapActivitiesByDate(isChecked) {
+            let dates;
             if (isChecked) {
                 dates = this.singleActivityPerDay
                     .map(a => a.created_at)
                     .reverse();
-                ward_beds = this.singleActivityPerDay
-                    .map(a => a.attributes.occupied_ward)
-                    .reverse();
-                return { dates, ward_beds };
+                return dates;
             }
 
             dates = this.activities.map(a => a.created_at).reverse();
-            ward_beds = this.activities
-                .map(a => a.attributes.occupied_ward)
-                .reverse();
-
-            return { dates, ward_beds };
+            return dates;
         },
 
         /**
