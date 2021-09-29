@@ -52,7 +52,26 @@ export default {
             activities: [],
             singleActivityPerDay: [],
             datacollection: {},
-            options: { maintainAspectRatio: false, responsive: true }
+            options: {
+                plugins: {
+                    datalabels: {
+                        color: "white",
+                        align: "end",
+                        anchor: "end",
+                        borderRadius: 4,
+                        padding: 3,
+                        backgroundColor: function(context) {
+                            return context.dataset.borderColor;
+                        },
+                        font: {
+                            weight: "bold",
+                            size: 10,
+                        }
+                    }
+                },
+                maintainAspectRatio: false,
+                responsive: true
+            }
         };
     },
     created() {
@@ -102,21 +121,21 @@ export default {
                 datasets: [
                     {
                         label: "Occupied Ward",
-                        // backgroundColor: "#f87950",
-                        borderColor: "#B5DFCA",
+                        backgroundColor: "#81B29A",
+                        borderColor: "#81B29A",
                         fill: false,
                         data: ward_beds
                     },
                     {
                         label: "Occupied Isolation",
-                        // backgroundColor: "#f66979",
+                        backgroundColor: "#467599",
                         borderColor: "#467599 ",
                         fill: false,
                         data: iso_beds
                     },
                     {
                         label: "Occupied ICU",
-                        // backgroundColor: "#f55979",
+                        backgroundColor: "#AF5D63",
                         borderColor: "#AF5D63",
                         fill: false,
                         data: icu_beds
