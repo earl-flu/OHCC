@@ -3913,18 +3913,30 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       });
     },
     fillData: function fillData() {
-      var _this$mapDateAndWard = this.mapDateAndWard(this.checked),
-          dates = _this$mapDateAndWard.dates,
-          ward_beds = _this$mapDateAndWard.ward_beds;
-
+      var dates = this.mapActivitiesByDate(this.checked);
+      var ward_beds = this.mapActivitiesByOccupiedBed(this.checked, "occupied_ward");
+      var iso_beds = this.mapActivitiesByOccupiedBed(this.checked, "occupied_isolation");
+      var icu_beds = this.mapActivitiesByOccupiedBed(this.checked, "occupied_icu");
       this.datacollection = {
         labels: dates,
         datasets: [{
           label: "Occupied Ward",
-          // backgroundColor: "#f87979",
-          borderColor: "rgb(75, 192, 192)",
+          // backgroundColor: "#f87950",
+          borderColor: "#B5DFCA",
           fill: false,
           data: ward_beds
+        }, {
+          label: "Occupied Isolation",
+          // backgroundColor: "#f66979",
+          borderColor: "#467599 ",
+          fill: false,
+          data: iso_beds
+        }, {
+          label: "Occupied ICU",
+          // backgroundColor: "#f55979",
+          borderColor: "#AF5D63",
+          fill: false,
+          data: icu_beds
         }]
       };
     },
@@ -3933,32 +3945,35 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var sevenDaysAgo = d.setDate(d.getDate() - 7);
       this.dateFrom = new Date(sevenDaysAgo);
     },
-    mapDateAndWard: function mapDateAndWard(isChecked) {
-      var dates, ward_beds; //if have datefrom and dateTo then filter the arrOfObj
+    mapActivitiesByOccupiedBed: function mapActivitiesByOccupiedBed(isChecked, bedType) {
+      var beds;
+
+      if (isChecked) {
+        beds = this.singleActivityPerDay.map(function (a) {
+          return a.attributes[bedType];
+        }).reverse();
+        return beds;
+      }
+
+      beds = this.activities.map(function (a) {
+        return a.attributes[bedType];
+      }).reverse();
+      return beds;
+    },
+    mapActivitiesByDate: function mapActivitiesByDate(isChecked) {
+      var dates;
 
       if (isChecked) {
         dates = this.singleActivityPerDay.map(function (a) {
           return a.created_at;
         }).reverse();
-        ward_beds = this.singleActivityPerDay.map(function (a) {
-          return a.attributes.occupied_ward;
-        }).reverse();
-        return {
-          dates: dates,
-          ward_beds: ward_beds
-        };
+        return dates;
       }
 
       dates = this.activities.map(function (a) {
         return a.created_at;
       }).reverse();
-      ward_beds = this.activities.map(function (a) {
-        return a.attributes.occupied_ward;
-      }).reverse();
-      return {
-        dates: dates,
-        ward_beds: ward_beds
-      };
+      return dates;
     },
 
     /**

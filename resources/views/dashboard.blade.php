@@ -187,116 +187,13 @@
 
                         <td>{{$hospital->municipality->name}}</td>
                         <td>{{$hospital->barangay}}</td>
-                    </tr>
-
-                    <!--SHOW OCCUPIED/CAPACITY USING PATIENT -->
-                    {{-- <tr>
-                        <td class="text-gray-700">{{$hospital->name}}</td>
-                    <td class="{{$hospital->getRemainingIcuCapacity() > 0 ? 'bg-yellow-500 bg-opacity-30' : ''}} ">
-                        {{$hospital->icu_capacity == 0 ? '0' : $hospital->getOccupiedIcu() .'/'. $hospital->icu_capacity }}
-                        <span class="icu-capacity hidden">{{$hospital->getRemainingIcuCapacity()}}</span>
-                    </td>
-                    <td class="{{$hospital->getRemainingIsolationCapacity() > 0 ? 'bg-green-500 bg-opacity-30' : ''}} ">
-                        {{$hospital->isolation_capacity == 0 ? '0' : $hospital->getOccupiedIsolation() .'/'. $hospital->isolation_capacity }}
-                        <span class="isolation-capacity hidden">{{$hospital->getRemainingIsolationCapacity()}}</span>
-                    </td>
-                    <td class="{{$hospital->getRemainingWardCapacity() > 0 ? 'bg-blue-500 bg-opacity-30' : ''}} ">
-                        {{$hospital->ward_capacity == 0 ? '0' : $hospital->getOccupiedWard() .'/'. $hospital->ward_capacity }}
-                        <span class="ward-capacity hidden">{{$hospital->getRemainingWardCapacity()}}</span>
-                    </td>
-                    <td
-                        class="{{$hospital->getRemainingVentilators() > 0 ? 'bg-purple-500 bg-opacity-30' : ''}} ventilator">
-                        {{$hospital->getRemainingVentilators()}}
-
-                    </td>
-
-                    <td>{{$hospital->municipality->name}}</td>
-                    <td>{{$hospital->barangay}}</td>
-                    </tr> --}}
-
-
-                    <!-- SHOW REMAINING CAPACITY USING PATIENT-->
-                    {{-- <tr>
-                        <td class="font-semibold text-gray-700">{{$hospital->name}}</td>
-                    <td
-                        class="{{$hospital->getRemainingIcuCapacity() > 0 ? 'bg-yellow-500 bg-opacity-30' : ''}} icu-capacity">
-                        {{$hospital->getRemainingIcuCapacity()}}</td>
-                    <td
-                        class="{{$hospital->getRemainingIsolationCapacity() > 0 ? 'bg-green-500 bg-opacity-30' : ''}} isolation-capacity">
-                        {{$hospital->getRemainingIsolationCapacity()}}</td>
-                    <td
-                        class="{{$hospital->getRemainingWardCapacity() > 0 ? 'bg-blue-500 bg-opacity-30' : ''}} ward-capacity">
-                        {{$hospital->getRemainingWardCapacity()}}</td>
-                    <td
-                        class="{{$hospital->getRemainingVentilators() > 0 ? 'bg-purple-500 bg-opacity-30' : ''}} ventilator">
-                        {{$hospital->getRemainingVentilators()}}</td>
-
-                    <td>{{$hospital->municipality->name}}</td>
-                    <td>{{$hospital->barangay}}</td>
-                    </tr> --}}
+                    </tr>   
                     @empty
 
                     @endforelse
                 </tbody>
             </table>
         </div>
-
-        {{-- <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
-            <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                Symptoms Classification
-            </h4>
-            <canvas id="pie"></canvas>
-            <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                <!-- Chart legend -->
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-blue-500 rounded-full"></span>
-                    <span>Asymptomatic</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span>
-                    <span>Mild</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
-                    <span>Severe</span>
-                </div>
-            </div>
-        </div>
-        <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
-            <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                Line Chart
-            </h4>
-            <canvas id="line"></canvas>
-            <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                <!-- Chart legend -->
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-teal-600 rounded-full"></span>
-                    <span>Line 1</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
-                    <span>Line 2</span>
-                </div>
-            </div>
-        </div>
-
-        <div class="min-w-0 p-4 bg-white rounded-lg shadow-xs dark:bg-gray-800">
-            <h4 class="mb-4 font-semibold text-gray-800 dark:text-gray-300">
-                Bar Chart
-            </h4>
-            <canvas id="bars"></canvas>
-            <div class="flex justify-center mt-4 space-x-3 text-sm text-gray-600 dark:text-gray-400">
-                <!-- Chart legend -->
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-teal-500 rounded-full"></span>
-                    <span>Test 1</span>
-                </div>
-                <div class="flex items-center">
-                    <span class="inline-block w-3 h-3 mr-1 bg-purple-600 rounded-full"></span>
-                    <span>Test 2</span>
-                </div>
-            </div>
-        </div> --}}
     </div>
 
 
