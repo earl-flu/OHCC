@@ -10,6 +10,7 @@
         rel="stylesheet" />
     <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="//cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.dataTables.min.css">
+    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css"> --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.css"
         integrity="sha512-8D+M+7Y6jVsEa7RD6Kv/Z7EImSpNpQllgaEIQAtqHcI0H6F4iZknRj0Nx1DCdB+TwBaS+702BGWYC0Ze2hpExQ=="
@@ -57,22 +58,8 @@
         .select2-selection__arrow {
             height: 34px !important;
         }
-
-        /* .select2-search {
-            background-color: #00f;
-        } */
-        /* 
-        .select2-search input {
-            background-color: #00f;
-        }
-
-        .select2-results {
-            background-color: #00f;
-        }
-        .select2-selection--single {
-            background-color: #00f!important;
-        } */
     </style>
+    @yield('assets')
     <!--SCRIPTS-->
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"
         integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
@@ -82,6 +69,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
     @stack('chart_scripts')
     <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
+    {{-- <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script> --}}
     <script src="//cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     {{-- <script src="https://f001.backblazeb2.com/file/buonzz-assets/jquery.ph-locations-v1.0.0.js"></script> --}}
@@ -111,7 +99,7 @@
                     {{-- text-gray-800 dark:text-gray-200  --}}
                     OHCC- Catanduanes
                 </a>
-                <p class="pl-6">EBMC</p>
+                <p class="pl-6 text-xs">One Health Command Center</p>
                 <ul class="mt-6">
                     <li class="relative px-6 py-3">
                         @if (request()->routeIs('dashboard'))
@@ -149,7 +137,7 @@
                         </a>
                     </li>
                     @endif
-                    <li class="relative px-6 py-3">
+                    {{-- <li class="relative px-6 py-3">
                         @if (request()->routeIs('patients.*'))
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg h-12"
                             aria-hidden="true"></span>
@@ -192,9 +180,10 @@
                                 </li>
                             </ul>
                         </template>
-                    </li>
+                    </li> --}}
+
                     <!-- Health Facilities Desktop-->
-                    @if (Auth::user()->isSuperAdmin() )
+                    {{-- @if (Auth::user()->isSuperAdmin() )
                     <li class="relative px-6 py-3">
                         @if (request()->routeIs('health-facilities.*'))
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
@@ -211,7 +200,7 @@
                             <span class="ml-4">Health Facilities</span>
                         </a>
                     </li>
-                    @endif
+                    @endif --}}
 
                 </ul>
             </div>
@@ -271,7 +260,7 @@
                     </li>
                     @endif
 
-                    <li class="relative px-6 py-3">
+                    {{-- <li class="relative px-6 py-3">
                         @if (request()->routeIs('patients.*'))
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg h-12"
                             aria-hidden="true"></span>
@@ -314,9 +303,9 @@
                                 </li>
                             </ul>
                         </template>
-                    </li>
+                    </li> --}}
                     <!-- Health Facilities Mobile-->
-                    @if (Auth::user()->isSuperAdmin())
+                    {{-- @if (Auth::user()->isSuperAdmin())
                     <li class="relative px-6 py-3">
                         @if (request()->routeIs('health-facilities.*'))
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
@@ -334,7 +323,7 @@
                             <span class="ml-4">Health Facilities</span>
                         </a>
                     </li>
-                    @endif
+                    @endif --}}
                 </ul>
             </div>
         </aside>
@@ -354,7 +343,7 @@
                     <!-- Search input -->
                     <div class="flex justify-center flex-1 lg:mr-32">
                         <div class="relative w-full max-w-xl mr-6 focus-within:text-purple-500">
-                            <div class="absolute inset-y-0 flex items-center pl-2">
+                            {{-- <div class="absolute inset-y-0 flex items-center pl-2">
                                 <svg class="w-4 h-4" aria-hidden="true" fill="currentColor" viewBox="0 0 20 20">
                                     <path fill-rule="evenodd"
                                         d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
@@ -363,12 +352,12 @@
                             </div>
                             <input
                                 class="w-full pl-8 pr-2 text-sm text-gray-700 placeholder-gray-600 bg-gray-100 border-0 rounded-md dark:placeholder-gray-500 dark:focus:shadow-outline-gray dark:focus:placeholder-gray-600 dark:bg-gray-700 dark:text-gray-200 focus:placeholder-gray-500 focus:bg-white focus:border-purple-300 focus:outline-none focus:shadow-outline-purple form-input"
-                                type="text" placeholder="Search for patient" aria-label="Search" />
+                                type="text" placeholder="Search for patient" aria-label="Search" /> --}}
                         </div>
                     </div>
                     <ul class="flex items-center flex-shrink-0 space-x-6">
                         <!-- Theme toggler -->
-                        <li class="flex">
+                        {{-- <li class="flex">
                             <button class="rounded-md focus:outline-none focus:shadow-outline-purple"
                                 @click="toggleTheme" aria-label="Toggle color mode">
                                 <template x-if="!dark">
@@ -385,7 +374,7 @@
                                     </svg>
                                 </template>
                             </button>
-                        </li>
+                        </li> --}}
                         <!-- Notifications menu -->
                         <li class="relative">
                             <button
@@ -440,7 +429,8 @@
                             <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"
                                 @click="toggleProfileMenu" @keydown.escape="closeProfileMenu" aria-label="Account"
                                 aria-haspopup="true">
-                                <div class="w-8 h-8 rounded-full text-sm bg-blue-600 text-gray-100 uppercase flex items-center justify-center">
+                                <div
+                                    class="w-8 h-8 rounded-full text-sm bg-blue-600 text-gray-100 uppercase flex items-center justify-center">
                                     {{Auth::user()->initial()}}
                                 </div>
                             </button>
@@ -452,7 +442,7 @@
                                     aria-label="submenu">
                                     <li class="flex">
                                         <a class="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                            href="#">
+                                            href="{{route('edit.account')}}">
                                             <svg class="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -460,12 +450,13 @@
                                                     d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z">
                                                 </path>
                                             </svg>
-                                            <span>Profile</span>
+                                            <span>My Account</span>
                                         </a>
                                     </li>
+                                    @if (!Auth::user()->isSuperAdmin())
                                     <li class="flex">
                                         <a class="inline-flex items-center w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                            href="#">
+                                            href="{{route('edit.capacity',Auth::user()->healthFacility)}}">
                                             <svg class="w-4 h-4 mr-3" aria-hidden="true" fill="none"
                                                 stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                                 viewBox="0 0 24 24" stroke="currentColor">
@@ -477,6 +468,8 @@
                                             <span>Settings</span>
                                         </a>
                                     </li>
+                                    @endif
+
                                     <li class="flex">
                                         <form action="{{route('logout')}}" method="POST">
                                             @csrf
@@ -507,6 +500,7 @@
             </main>
         </div>
     </div>
+    @stack('scripts')
 </body>
 
 </html>

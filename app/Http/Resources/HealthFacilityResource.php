@@ -31,7 +31,9 @@ class HealthFacilityResource extends JsonResource
             "is_isolation_facility" => $this->is_isolation_facility,
             "is_infirmary" => $this->is_infirmary,
             "remarks" => $this->remarks,
-            'municipality' => new MunicipalityResource($this->municipality),
+            // 'municipality' => new MunicipalityResource($this->municipality),
+            'municipality' => $this->municipality,
+            "updated_at" => $this->updated_at
         ];
     }
 }

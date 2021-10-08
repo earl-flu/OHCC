@@ -10,7 +10,7 @@ class Municipality extends Model
     use HasFactory;
 
     //Health Facilities
-    public function hospitals()
+    public function healthFacilities()
     {
         return $this->hasMany(HealthFacility::class);
     }
@@ -18,8 +18,8 @@ class Municipality extends Model
     /**
      * Return total number of capacity e.g. icu_capacity
      */
-    public function bedCount($capacity_type)
+    public function getTotal($capacity_type)
     {
-        return $this->hospitals->sum($capacity_type);
+        return $this->healthFacilities->sum($capacity_type);
     }
 }

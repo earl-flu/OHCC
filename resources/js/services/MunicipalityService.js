@@ -8,10 +8,7 @@ const apiClient = axios.create({
 });
 
 export default {
-    // should be yyyy-mm-dd format
-    getActivities(startDate, endDate) {
-        return apiClient.get(
-            "/activities?_startDate=" + startDate + "&_endDate=" + endDate
-        );
+    getMunicipalities() {
+        return apiClient.get("/municipalities");
     }
 };

@@ -20,13 +20,13 @@
                             <span class="text-gray-400">Email</span>
                             <input name="email"
                             value="{{old('email')}}"
-                                class="rounded block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                class="rounded block w-full mt-1 text-gray-700 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
                                 placeholder="ryanCute@gmail.com" />
                         </label>
                         <label class="block mt-4 text-sm">
                             <span class="text-gray-400">Password</span>
                             <input name="password"
-                             class="rounded block w-full mt-1 text-sm dark:border-gray-600 
+                             class="rounded block w-full mt-1 text-gray-700 text-sm dark:border-gray-600 
                             dark:bg-gray-700 focus:border-purple-400 focus:outline-none 
                             focus:shadow-outline-purple dark:text-gray-300 
                             dark:focus:shadow-outline-gray form-input" placeholder="***************" type="password" />

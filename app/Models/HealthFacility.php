@@ -4,18 +4,24 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Spatie\Activitylog\Models\Activity;
 use Spatie\Activitylog\Traits\LogsActivity;
 
 class HealthFacility extends Model
 {
-    use HasFactory, LogsActivity;
+    use HasFactory;
+    // use LogsActivity;
+
     protected $guarded = ['id'];
 
+    const UPDATE_OCCUPIED = 'updated_occupied';
+    const UPDATE_CAPACITY = 'updated_capacity';
+
     //log changes to all the unguarded attributes of the model
-    protected static $logUnguarded = true;
+    // protected static $logUnguarded = true;
 
     // Specifying a log for model
-    protected static $logName = 'health_facility_log';
+    // protected static $logName = 'health_facility_log';
 
     public function patients()
     {
@@ -32,10 +38,48 @@ class HealthFacility extends Model
         return $this->belongsTo(Municipality::class);
     }
 
-    // public function getMunicipalityName(){
-    //     return $this->municipality->name;
-    // }
+    public function histories()
+    {
+        return $this->hasMany(History::class);
+    }
 
+    public function writeHistoryCapacity($user_id, $health_facility, $log_name)
+    {
+        //if there are no changes, will not save history
+        if (empty($this->getChanges())) return;
+
+        $history = new History([
+            'user_id' => $user_id,
+            'municipality_id' => $health_facility->municipality_id,
+            'ward_capacity' => $health_facility->ward_capacity,
+            'isolation_capacity' => $health_facility->isolation_capacity,
+            'icu_capacity' => $health_facility->icu_capacity,
+            'ventilator' => $health_facility->max_ventilator,
+            'log_name' => $log_name,
+
+        ]);
+
+        $this->histories()->save($history);
+    }
+
+    public function writeHistoryOccupied($user_id, $health_facility, $log_name)
+    {
+        //if there are no changes, will not save history
+        if (empty($this->getChanges())) return;
+
+        $history = new History([
+            'user_id' => $user_id,
+            'municipality_id' => $health_facility->municipality_id,
+            'occupied_ward' => $health_facility->occupied_ward,
+            'occupied_isolation' => $health_facility->occupied_isolation,
+            'occupied_icu' => $health_facility->occupied_icu,
+            'ventilator' => $health_facility->max_ventilator,
+            'log_name' => $log_name,
+
+        ]);
+
+        $this->histories()->save($history);
+    }
 
     /**
      * ID's
@@ -44,89 +88,22 @@ class HealthFacility extends Model
      * icu: 3
      */
 
-    //returns number
-    public function getOccupiedWard()
+    //returns integer
+    public function totalRemainingWard()
     {
-        return $this->patients
-            ->where('bed_id', Patient::WARD_BED)
-            ->where('patient_status_id', Patient::STATUS_ACTIVE)
-            ->count();
+        return $this->ward_capacity - $this->occupied_ward;
     }
 
-    //returns number
-    public function getOccupiedIsolation()
+    public function totalRemainingIso()
     {
-        return $this->patients
-            ->where('bed_id', Patient::ISOLATION_BED)
-            ->where('patient_status_id', Patient::STATUS_ACTIVE)->count();
+        return $this->isolation_capacity - $this->occupied_isolation;
     }
 
-    //returns number
-    public function getOccupiedIcu()
+    public function totalRemainingIcu()
     {
-        return $this->patients
-            ->where('bed_id', Patient::ICU_BED)
-            ->where('patient_status_id', Patient::STATUS_ACTIVE)
-            ->count();
+        return $this->icu_capacity - $this->occupied_icu;
     }
 
-    public function getRemainingIcuCapacity()
-    {
-        $icuPatient = $this->patients
-            ->where('bed_id', 3)
-            ->where('patient_status_id', Patient::STATUS_ACTIVE)->count();
-        return $this->icu_capacity - $icuPatient;
-    }
-
-    //returns number
-    public function getRemainingIsolationCapacity()
-    {
-        $isolationPatient = $this->patients
-            ->where('bed_id', 2)
-            ->where('patient_status_id', Patient::STATUS_ACTIVE)->count();
-        return $this->isolation_capacity - $isolationPatient;
-    }
-
-    //returns number
-    public function getRemainingWardCapacity()
-    {
-        $wardPatient = $this->patients
-            ->where('bed_id', 1)
-            ->where('patient_status_id', Patient::STATUS_ACTIVE)->count();
-        return $this->ward_capacity - $wardPatient;
-    }
-
-    //returns number
-    public function getRemainingVentilators()
-    {
-        $usedVentilator = $this->patients->where('ventilator', 1)->count();
-        return $this->ventilator_capacity - $usedVentilator;
-    }
-
-    //returns boolean
-    public function isTwentyPercent($bedtype)
-    {
-        if ($bedtype === 'ward') {
-            $twentyPercent = round($this->ward_capacity * .2);
-            return $this->getRemainingWardCapacity() <= $twentyPercent || 0;
-        }
-
-        if ($bedtype === 'isolation') {
-            $twentyPercent = round($this->isolation_capacity * .2);
-            return $this->getRemainingIsolationCapacity() <= $twentyPercent || 0;
-        }
-
-        if ($bedtype === 'icu') {
-            $twentyPercent = round($this->icu_capacity * .2);
-            return $this->getRemainingIcuCapacity() <= $twentyPercent || 0;
-        }
-
-        if ($bedtype === 'ventilator') {
-
-            $twentyPercent = round($this->ventilators_capacity * .2);
-            return $this->getRemainingVentilators() <= $twentyPercent || 0;
-        }
-    }
 
     public function scopeTotalCapacity($query, $tablecol)
     {
@@ -136,7 +113,7 @@ class HealthFacility extends Model
     public function scopeNameSearch($query, $value)
     {
         $value = '%' . strtolower($value) . '%';
-        
+
         return $query->whereRaw('LOWER(name) LIKE ?', [$value]);
     }
 
@@ -145,7 +122,8 @@ class HealthFacility extends Model
      * @param $municipality integer e.g. 11 = Virac
      * @param $bed_type string e.g. icu_capacity
      */
-    public function scopeMunicipalityBedTotalCapacity($query){
+    public function scopeMunicipalityBedTotalCapacity($query)
+    {
         return $query->where('municipality_id', 11)->sum('icu_capacity');
     }
 
@@ -155,8 +133,8 @@ class HealthFacility extends Model
      * @param $bed_type string e.g. icu_capacity
      */
 
-    public function muniBedTotalCapacity($municipality, $bed_type){
+    public function muniBedTotalCapacity($municipality, $bed_type)
+    {
         dd($this->ward_capacity);
     }
-
 }

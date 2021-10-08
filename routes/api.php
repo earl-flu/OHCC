@@ -26,4 +26,4 @@ Route::get('/hospitals', function () {
     return HospitalResource::collection(HealthFacility::with('municipality')->get());
 });
 
-Route::get('health-facilities', [HealthFacilityController::class, 'index']);
+

@@ -21,6 +21,11 @@ class RegisteredUserController extends Controller
      */
     public function create()
     {
+        $user = Auth::user();
+
+        if (!$user->isSuperAdmin()) {
+            abort(403);
+        };
         $health_facilities = HealthFacility::all();
         return view('auth.register', compact('health_facilities'));
     }
@@ -35,7 +40,12 @@ class RegisteredUserController extends Controller
      */
     public function store(Request $request)
     {
-      
+        $user = Auth::user();
+
+        if (!$user->isSuperAdmin()) {
+            abort(403);
+        };
+
         $request->validate([
             'first_name' => 'required|string|max:30|min:2',
             'middle_name' => 'nullable|string|max:30',
@@ -45,19 +55,23 @@ class RegisteredUserController extends Controller
             'email' => 'required|string|email|max:255|unique:users',
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
         ]);
-        // dd($request->has('super_admin'));
+
+        $health_facility =  $request->super_admin ? null : $request->health_facility_id;
+
         $user = User::create([
             'first_name' => $request->first_name,
             'middle_name' => $request->middle_name,
             'last_name' => $request->last_name,
-            'health_facility_id' => $request->health_facility_id,
+            'health_facility_id' => $health_facility,
             'super_admin' => $request->has('super_admin'),
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-       
+
+
+        // dd($user);
         event(new Registered($user));
-   
+
         Auth::login($user);
 
         return redirect(RouteServiceProvider::HOME);

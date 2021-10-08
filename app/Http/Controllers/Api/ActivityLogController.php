@@ -12,14 +12,14 @@ class ActivityLogController extends Controller
 {
     public function index(Request $request)
     {
-        // Specific Data Health Facility Based on User
+        // Specific Data of Health Facility Based on User
         $user = Auth::user();
 
         // If startDate and endDate is set then:
         // Filter the healthfacility based on date query string
         $startDate = $request->query('_startDate');
         $endDate = $request->query('_endDate');
-        // dd($endDate);
+
         if ($startDate && $endDate) {
             $activities = Activity::where('subject_id', $user->health_facility_id)
                 ->where([

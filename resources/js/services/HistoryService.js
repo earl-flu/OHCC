@@ -9,9 +9,9 @@ const apiClient = axios.create({
 
 export default {
     // should be yyyy-mm-dd format
-    getActivities(startDate, endDate) {
+    getHistories(startDate, endDate) {
         return apiClient.get(
-            "/activities?_startDate=" + startDate + "&_endDate=" + endDate
+            "/histories?_startDate=" + startDate + "&_endDate=" + endDate
         );
     }
 };

@@ -1,43 +1,57 @@
 <template>
-    <div>
-        <div class="">
+    <div class="shadow-md border rounded-lg p-5 mb-10">
+        <!-- Filter Container -->
+        <div class="flex flex-col md:flex-row mt-5 mb-2 text-gray-600">
             <datepicker
-                input-class="border"
-                placeholder="Date From"
+                input-class="text-sm mb-2 md:mb-0 border w-11/12 md:w-auto p-1 rounded"
+                placeholder="From"
                 :full-month-name="true"
                 :clear-button="true"
                 v-model="dateFrom"
             ></datepicker>
+
             <datepicker
-                input-class="border"
+                input-class="text-sm mb-2 md:mb-0 border p-1 w-11/12 md:w-auto rounded md:ml-4"
                 placeholder="To"
                 :full-month-name="true"
                 :clear-button="true"
                 v-model="dateTo"
             ></datepicker>
-            <button @click="setActivities(dateFrom, dateTo)">
-                Filter Date
+
+            <button
+                @click="setHistories(dateFrom, dateTo)"
+                class="w-11/12 md:w-auto md:ml-4  px-3 flex-none py-1 text-sm font-medium leading-5
+                 text-white transition-colors duration-150 border 
+                 border-transparent rounded-md bg-blue-500 hover:bg-blue-600 
+                 focus:outline-none"
+            >
+                Filter
             </button>
         </div>
-
-        <line-chart
-            :chart-data="datacollection"
-            :options="options"
-        ></line-chart>
-        <input
-            type="checkbox"
-            id="checkbox"
-            v-model="checked"
-            @change="fillData()"
-        />
-        <label for="checkbox">Last update per day</label> |
-
-        <!-- <button @click="getDateOnly()">Console Date</button> -->
+        <!-- Checkbox -->
+        <div class="mb-5">
+            <input
+                class="align-middle"
+                type="checkbox"
+                id="checkbox"
+                v-model="checked"
+                @change="fillData()"
+            />
+            <label for="checkbox" class="text-sm text-gray-600"
+                >Last update per day</label
+            >
+        </div>
+        <div>
+            <line-chart
+                :chart-data="datacollection"
+                :options="options"
+            ></line-chart>
+        </div>
     </div>
 </template>
 
 <script>
-import ActivityService from "../../js/services/ActivityService.js";
+import HistoryService from "../../js/services/HistoryService.js";
 import Datepicker from "vuejs-datepicker";
 
 export default {
@@ -49,12 +63,15 @@ export default {
             dateFrom: null,
             dateTo: new Date(),
             checked: false,
-            activities: [],
+            histories: [],
             singleActivityPerDay: [],
             datacollection: {},
+            //IDEA -kung ga update pag gabago ang dataset - edi ihiling yung docu ni chart vuejs
+            // at itry utro yung code duman
             options: {
                 plugins: {
                     datalabels: {
+                        display: true,
                         color: "white",
                         align: "end",
                         anchor: "end",
@@ -65,7 +82,7 @@ export default {
                         },
                         font: {
                             weight: "bold",
-                            size: 10,
+                            size: 10
                         }
                     }
                 },
@@ -76,24 +93,22 @@ export default {
     },
     created() {
         this.setInitialDateFrom();
-        this.setActivities(this.dateFrom, this.dateTo);
+        this.setHistories(this.dateFrom, this.dateTo);
     },
 
     methods: {
-        setActivities(dateFrom, dateTo) {
+        setHistories(dateFrom, dateTo) {
             //bago ipasa dapat converted yung dateObj into yyyy/mm/dd
             const startDate = dateFrom.toISOString().split("T")[0];
             const endDate = dateTo.toISOString().split("T")[0];
 
-            ActivityService.getActivities(startDate, endDate)
+            HistoryService.getHistories(startDate, endDate)
                 .then(res => {
                     //set activities data
-                    this.activities = res.data.data;
+                    this.histories = res.data.data;
 
-                    //set singleActivityPerDay data
-                    const activities = this.activities;
-                    this.singleActivityPerDay = this.setSingleActivityPerDay(
-                        activities
+                    this.singleHistoryPerDay = this.setSingleHistoryPerDay(
+                        this.histories
                     );
                     //fill the data for chart
                     this.fillData();
@@ -102,20 +117,22 @@ export default {
                     console.log("There was an error:", err);
                 });
         },
+
         fillData() {
-            const dates = this.mapActivitiesByDate(this.checked);
-            const ward_beds = this.mapActivitiesByOccupiedBed(
+            const dates = this.mapHistoriesByDate(this.checked);
+            const ward_beds = this.mapHistoriesByOccupiedBed(
                 this.checked,
                 "occupied_ward"
             );
-            const iso_beds = this.mapActivitiesByOccupiedBed(
+            const iso_beds = this.mapHistoriesByOccupiedBed(
                 this.checked,
                 "occupied_isolation"
             );
-            const icu_beds = this.mapActivitiesByOccupiedBed(
+            const icu_beds = this.mapHistoriesByOccupiedBed(
                 this.checked,
                 "occupied_icu"
             );
+
             this.datacollection = {
                 labels: dates,
                 datasets: [
@@ -135,8 +152,8 @@ export default {
                     },
                     {
                         label: "Occupied ICU",
-                        backgroundColor: "#AF5D63",
-                        borderColor: "#AF5D63",
+                        backgroundColor: "#ffb700",
+                        borderColor: "#ffb700",
                         fill: false,
                         data: icu_beds
                     }
@@ -150,39 +167,39 @@ export default {
             this.dateFrom = new Date(sevenDaysAgo);
         },
 
-        mapActivitiesByOccupiedBed(isChecked, bedType) {
+        mapHistoriesByOccupiedBed(isChecked, bedType) {
+            // console.log("mapActivitiesByOccupiedBed");
             let beds;
             if (isChecked) {
-                beds = this.singleActivityPerDay
-                    .map(a => a.attributes[bedType])
-                    .reverse();
+                beds = this.singleHistoryPerDay.map(h => h[bedType]).reverse();
                 return beds;
             }
 
-            beds = this.activities.map(a => a.attributes[bedType]).reverse();
+            beds = this.histories.map(h => h[bedType]).reverse();
             return beds;
         },
 
-        mapActivitiesByDate(isChecked) {
+        mapHistoriesByDate(isChecked) {
+            // console.log("mapActivitiesByDate");
             let dates;
             if (isChecked) {
-                dates = this.singleActivityPerDay
-                    .map(a => a.created_at)
+                dates = this.singleHistoryPerDay
+                    .map(h => h.created_at)
                     .reverse();
                 return dates;
             }
 
-            dates = this.activities.map(a => a.created_at).reverse();
+            dates = this.histories.map(h => h.created_at).reverse();
             return dates;
         },
 
         /**
-         * Code for setting the singleActivityPerDay - filters the Activities arr of obj and
+         * Code for setting the singleHistoryPerDay - filters the Histories arr of obj and
          * return only the most latest update in a day
          */
 
-        // split the date and time from the activities array of object
-        mapActivities(arr) {
+        // split the date and time from the histories array of object
+        mapHistories(arr) {
             return arr.map(item => {
                 const [date, time] = item.created_at.split(" ");
                 return { ...item, date, time };
@@ -190,7 +207,6 @@ export default {
         },
 
         findHighestInGroup(data) {
-            console.log(data, "findHighestInGroup");
             return data.reduce(
                 (acc, curr) => {
                     const { time } = curr;
@@ -205,6 +221,7 @@ export default {
             );
         },
         resolveLatestByDateAndTime(data) {
+            // console.log("resolveLatestByDateAndTime");
             // Create an array of unique date
             const unique = [...new Set(data.map(item => item.date))];
 
@@ -212,13 +229,13 @@ export default {
             return unique.reduce((acc, curr) => {
                 // Group the data per date in every loop
                 const groupByDate = data.filter(d => d.date === curr);
-                console.log(groupByDate);
+                // console.log(groupByDate);
                 /**
                  * First loop will return e.g.
                  *  [
-                 *    { name: "01-01-2021", ...},
-                 *    { name: "01-01-2021", ... },
-                 *    { name: "01-01-2021", ... },
+                 *    { date: "01-01-2021", ...},
+                 *    { date: "01-01-2021", ... },
+                 *    { date: "01-01-2021", ... },
                  * ]
                  */
 
@@ -228,9 +245,10 @@ export default {
                 return [...acc, highestInGroup];
             }, []);
         },
-        setSingleActivityPerDay(actis) {
-            const mappedActivities = this.mapActivities(actis);
-            return this.resolveLatestByDateAndTime(mappedActivities);
+
+        setSingleHistoryPerDay(histo) {
+            const mappedHistories = this.mapHistories(histo);
+            return this.resolveLatestByDateAndTime(mappedHistories);
         }
     }
 };

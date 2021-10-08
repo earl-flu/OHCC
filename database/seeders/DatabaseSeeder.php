@@ -18,7 +18,7 @@ class DatabaseSeeder extends Seeder
             MunicipalitySeeder::class,
             HealthFacilitySeeder::class,
             PatientStatusSeeder::class,
-            // RoleSeeder::class,
+            UserSeeder::class,
         ]);
     }
 }

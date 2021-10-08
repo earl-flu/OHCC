@@ -9,29 +9,41 @@
         <!-- Validation Errors -->
         <x-auth-validation-errors class="mb-4" :errors="$errors" />
 
-        <form method="POST" action="{{ route('register') }}">
+        <form method="POST" action="{{ route('register') }}" autocomplete="off" x-data="{superAdmin: false,title: 'test'}">
             @csrf
-
+            <h1 x-text="title"></h1>
             <!-- First Name -->
             <div>
                 <x-label for="first_name" :value="__('First name')" />
 
-                <x-input id="first_name" class="block mt-1 w-full" type="text" name="first_name"
-                    :value="old('first_name')" required autofocus />
+                <x-input id="first_name" class="border border-gray-200 rounded block w-full 
+                mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                focus:border-purple-400 focus:outline-none 
+                focus:shadow-outline-purple dark:text-gray-300 
+                dark:focus:shadow-outline-gray form-input" type="text" name="first_name" :value="old('first_name')"
+                    required autofocus />
             </div>
             <!-- Middle Name -->
-            <div>
+            <div class="mt-4">
                 <x-label for="middle_name" :value="__('Middle name')" />
 
-                <x-input id="middle_name" class="block mt-1 w-full" type="text" name="middle_name"
-                    :value="old('middle_name')" required autofocus />
+                <x-input id="middle_name" class="border border-gray-200 rounded block w-full 
+                mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                focus:border-purple-400 focus:outline-none 
+                focus:shadow-outline-purple dark:text-gray-300 
+                dark:focus:shadow-outline-gray form-input" type="text" name="middle_name" :value="old('middle_name')"
+                    required autofocus />
             </div>
 
             <!-- Last Name -->
-            <div>
+            <div class="mt-4">
                 <x-label for="last_name" :value="__('Last name')" />
 
-                <x-input id="last_name" class="block mt-1 w-full" type="text" name="last_name" :value="old('last_name')"
+                <x-input id="last_name" class="border border-gray-200 rounded block w-full 
+                mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                focus:border-purple-400 focus:outline-none 
+                focus:shadow-outline-purple dark:text-gray-300 
+                dark:focus:shadow-outline-gray form-input" type="text" name="last_name" :value="old('last_name')"
                     required autofocus />
             </div>
 
@@ -39,22 +51,26 @@
             <div class="mt-4">
                 <x-label for="email" :value="__('Email')" />
 
-                <x-input id="email" class="block mt-1 w-full" type="email" name="email" :value="old('email')"
-                    required />
+                <x-input id="email" class="border border-gray-200 rounded block w-full 
+                mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                focus:border-purple-400 focus:outline-none 
+                focus:shadow-outline-purple dark:text-gray-300 
+                dark:focus:shadow-outline-gray form-input" type="email" name="email" :value="old('email')" required />
             </div>
 
             <!-- Super Admin-->
             <div class="flex mt-4 text-sm">
                 <label class="flex items-center dark:text-gray-400">
-                    <input type="checkbox" name="super_admin" value="1"
-                        class="text-purple-600 form-checkbox focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" />
+                    <input type="checkbox" name="super_admin" value="1" @click="superAdmin = !superAdmin"
+                        class="text-purple-600 form-checkbox border border-gray-300 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray" />
                     <span class="ml-2">
                         Super Admin
                     </span>
                 </label>
             </div>
+
             <!-- Health Facility -->
-            <div class="mt-4">
+            <div class="mt-4" x-show="!superAdmin">
                 <x-label for="health_facility_id" :value="__('Health Facility')" />
 
                 <select name="health_facility_id"
@@ -72,7 +88,11 @@
             <div class="mt-4">
                 <x-label for="password" :value="__('Password')" />
 
-                <x-input id="password" class="block mt-1 w-full" type="password" name="password" required
+                <x-input id="password" class="border border-gray-200 rounded block w-full 
+                mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                focus:border-purple-400 focus:outline-none 
+                focus:shadow-outline-purple dark:text-gray-300 
+                dark:focus:shadow-outline-gray form-input" type="password" name="password" required
                     autocomplete="new-password" />
             </div>
 
@@ -80,8 +100,11 @@
             <div class="mt-4">
                 <x-label for="password_confirmation" :value="__('Confirm Password')" />
 
-                <x-input id="password_confirmation" class="block mt-1 w-full" type="password"
-                    name="password_confirmation" required />
+                <x-input id="password_confirmation" class="border border-gray-200 rounded block w-full 
+                mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 
+                focus:border-purple-400 focus:outline-none 
+                focus:shadow-outline-purple dark:text-gray-300 
+                dark:focus:shadow-outline-gray form-input" type="password" name="password_confirmation" required />
             </div>
 
             <div class="flex items-center justify-end mt-4">
@@ -89,7 +112,7 @@
                     {{ __('Already registered?') }}
                 </a>
 
-                <x-button class="ml-4">
+                <x-button class="ml-4 bg-blue-500 hover:bg-blue-600 ">
                     {{ __('Register') }}
                 </x-button>
             </div>

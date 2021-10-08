@@ -55,6 +55,11 @@ class User extends Authenticatable
         return $this->super_admin;
     }
 
+    public function getFullNameAttribute()
+    {
+        return "{$this->last_name}, {$this->first_name} {$this->middle_name}";
+    }
+
     public function initial()
     {
         // Delimit by multiple spaces, hyphen, underscore, comma

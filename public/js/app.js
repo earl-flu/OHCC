@@ -3803,7 +3803,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _js_services_ActivityService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/services/ActivityService.js */ "./resources/js/services/ActivityService.js");
+/* harmony import */ var _js_services_HistoryService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/services/HistoryService.js */ "./resources/js/services/HistoryService.js");
 /* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -3869,6 +3869,20 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -3880,12 +3894,15 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       dateFrom: null,
       dateTo: new Date(),
       checked: false,
-      activities: [],
+      histories: [],
       singleActivityPerDay: [],
       datacollection: {},
+      //IDEA -kung ga update pag gabago ang dataset - edi ihiling yung docu ni chart vuejs
+      // at itry utro yung code duman
       options: {
         plugins: {
           datalabels: {
+            display: true,
             color: "white",
             align: "end",
             anchor: "end",
@@ -3907,21 +3924,19 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
   },
   created: function created() {
     this.setInitialDateFrom();
-    this.setActivities(this.dateFrom, this.dateTo);
+    this.setHistories(this.dateFrom, this.dateTo);
   },
   methods: {
-    setActivities: function setActivities(dateFrom, dateTo) {
+    setHistories: function setHistories(dateFrom, dateTo) {
       var _this = this;
 
       //bago ipasa dapat converted yung dateObj into yyyy/mm/dd
       var startDate = dateFrom.toISOString().split("T")[0];
       var endDate = dateTo.toISOString().split("T")[0];
-      _js_services_ActivityService_js__WEBPACK_IMPORTED_MODULE_0__.default.getActivities(startDate, endDate).then(function (res) {
+      _js_services_HistoryService_js__WEBPACK_IMPORTED_MODULE_0__.default.getHistories(startDate, endDate).then(function (res) {
         //set activities data
-        _this.activities = res.data.data; //set singleActivityPerDay data
-
-        var activities = _this.activities;
-        _this.singleActivityPerDay = _this.setSingleActivityPerDay(activities); //fill the data for chart
+        _this.histories = res.data.data;
+        _this.singleHistoryPerDay = _this.setSingleHistoryPerDay(_this.histories); //fill the data for chart
 
         _this.fillData();
       })["catch"](function (err) {
@@ -3929,10 +3944,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       });
     },
     fillData: function fillData() {
-      var dates = this.mapActivitiesByDate(this.checked);
-      var ward_beds = this.mapActivitiesByOccupiedBed(this.checked, "occupied_ward");
-      var iso_beds = this.mapActivitiesByOccupiedBed(this.checked, "occupied_isolation");
-      var icu_beds = this.mapActivitiesByOccupiedBed(this.checked, "occupied_icu");
+      var dates = this.mapHistoriesByDate(this.checked);
+      var ward_beds = this.mapHistoriesByOccupiedBed(this.checked, "occupied_ward");
+      var iso_beds = this.mapHistoriesByOccupiedBed(this.checked, "occupied_isolation");
+      var icu_beds = this.mapHistoriesByOccupiedBed(this.checked, "occupied_icu");
       this.datacollection = {
         labels: dates,
         datasets: [{
@@ -3949,8 +3964,8 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
           data: iso_beds
         }, {
           label: "Occupied ICU",
-          backgroundColor: "#AF5D63",
-          borderColor: "#AF5D63",
+          backgroundColor: "#ffb700",
+          borderColor: "#ffb700",
           fill: false,
           data: icu_beds
         }]
@@ -3961,43 +3976,45 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       var sevenDaysAgo = d.setDate(d.getDate() - 7);
       this.dateFrom = new Date(sevenDaysAgo);
     },
-    mapActivitiesByOccupiedBed: function mapActivitiesByOccupiedBed(isChecked, bedType) {
+    mapHistoriesByOccupiedBed: function mapHistoriesByOccupiedBed(isChecked, bedType) {
+      // console.log("mapActivitiesByOccupiedBed");
       var beds;
 
       if (isChecked) {
-        beds = this.singleActivityPerDay.map(function (a) {
-          return a.attributes[bedType];
+        beds = this.singleHistoryPerDay.map(function (h) {
+          return h[bedType];
         }).reverse();
         return beds;
       }
 
-      beds = this.activities.map(function (a) {
-        return a.attributes[bedType];
+      beds = this.histories.map(function (h) {
+        return h[bedType];
       }).reverse();
       return beds;
     },
-    mapActivitiesByDate: function mapActivitiesByDate(isChecked) {
+    mapHistoriesByDate: function mapHistoriesByDate(isChecked) {
+      // console.log("mapActivitiesByDate");
       var dates;
 
       if (isChecked) {
-        dates = this.singleActivityPerDay.map(function (a) {
-          return a.created_at;
+        dates = this.singleHistoryPerDay.map(function (h) {
+          return h.created_at;
         }).reverse();
         return dates;
       }
 
-      dates = this.activities.map(function (a) {
-        return a.created_at;
+      dates = this.histories.map(function (h) {
+        return h.created_at;
       }).reverse();
       return dates;
     },
 
     /**
-     * Code for setting the singleActivityPerDay - filters the Activities arr of obj and
+     * Code for setting the singleHistoryPerDay - filters the Histories arr of obj and
      * return only the most latest update in a day
      */
-    // split the date and time from the activities array of object
-    mapActivities: function mapActivities(arr) {
+    // split the date and time from the histories array of object
+    mapHistories: function mapHistories(arr) {
       return arr.map(function (item) {
         var _item$created_at$spli = item.created_at.split(" "),
             _item$created_at$spli2 = _slicedToArray(_item$created_at$spli, 2),
@@ -4011,7 +4028,6 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       });
     },
     findHighestInGroup: function findHighestInGroup(data) {
-      console.log(data, "findHighestInGroup");
       return data.reduce(function (acc, curr) {
         var time = curr.time;
 
@@ -4027,6 +4043,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     resolveLatestByDateAndTime: function resolveLatestByDateAndTime(data) {
       var _this2 = this;
 
+      // console.log("resolveLatestByDateAndTime");
       // Create an array of unique date
       var unique = _toConsumableArray(new Set(data.map(function (item) {
         return item.date;
@@ -4037,14 +4054,14 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         // Group the data per date in every loop
         var groupByDate = data.filter(function (d) {
           return d.date === curr;
-        });
-        console.log(groupByDate);
+        }); // console.log(groupByDate);
+
         /**
          * First loop will return e.g.
          *  [
-         *    { name: "01-01-2021", ...},
-         *    { name: "01-01-2021", ... },
-         *    { name: "01-01-2021", ... },
+         *    { date: "01-01-2021", ...},
+         *    { date: "01-01-2021", ... },
+         *    { date: "01-01-2021", ... },
          * ]
          */
         //reduce the group of date and only return the latest
@@ -4054,9 +4071,354 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
         return [].concat(_toConsumableArray(acc), [highestInGroup]);
       }, []);
     },
-    setSingleActivityPerDay: function setSingleActivityPerDay(actis) {
-      var mappedActivities = this.mapActivities(actis);
-      return this.resolveLatestByDateAndTime(mappedActivities);
+    setSingleHistoryPerDay: function setSingleHistoryPerDay(histo) {
+      var mappedHistories = this.mapHistories(histo);
+      return this.resolveLatestByDateAndTime(mappedHistories);
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=script&lang=js&":
+/*!**************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=script&lang=js& ***!
+  \**************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_HealthFacilityService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/HealthFacilityService.js */ "./resources/js/services/HealthFacilityService.js");
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  props: ["municipalities"],
+  data: function data() {
+    return {
+      nameQuery: "",
+      selectedType: "All",
+      selectedMunicipality: "All",
+      loaded: false,
+      healthfacilities: [],
+      filteredData: []
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    _services_HealthFacilityService_js__WEBPACK_IMPORTED_MODULE_0__.default.getHealthFacilities().then(function (res) {
+      _this.loaded = false;
+      _this.healthfacilities = res.data.data;
+
+      _this.setDefaultFilteredData();
+
+      _this.loaded = true;
+    })["catch"](function (err) {
+      console.log("There was an error:", err);
+    });
+  },
+  methods: {
+    sortByNameAsc: function sortByNameAsc() {
+      this.filteredData = this.filteredData.sort(function (a, b) {
+        if (a.name < b.name) {
+          return -1;
+        }
+
+        if (a.name > b.name) {
+          return 1;
+        }
+
+        return 0;
+      });
+    },
+    setFilteredData: function setFilteredData() {
+      this.setDefaultFilteredData();
+      this.setFilteredDataByName();
+      this.setFilteredDataByType();
+      this.setFilteredDataByMunicipality();
+    },
+    setDefaultFilteredData: function setDefaultFilteredData() {
+      this.filteredData = this.healthfacilities;
+    },
+    setFilteredDataByName: function setFilteredDataByName() {
+      var _this2 = this;
+
+      if (!this.nameQuery) return;
+      this.filteredData = this.filteredData.filter(function (item) {
+        return item.name.toLowerCase().indexOf(_this2.nameQuery.toLowerCase()) > -1;
+      });
+    },
+    setFilteredDataByType: function setFilteredDataByType() {
+      if (this.selectedType === "All") {
+        this.filteredData = this.filteredData;
+      } //if isolation facility
+
+
+      if (this.selectedType === "1") {
+        this.filteredData = this.filteredData.filter(function (item) {
+          return item.is_isolation_facility === 1;
+        });
+      } //if hospital
+
+
+      if (this.selectedType === "0") {
+        this.filteredData = this.filteredData.filter(function (item) {
+          return item.is_isolation_facility === 0;
+        });
+      }
+    },
+    setFilteredDataByMunicipality: function setFilteredDataByMunicipality() {
+      var municipality_id = this.selectedMunicipality;
+
+      if (municipality_id === "All") {
+        this.filteredData = this.filteredData;
+      } else {
+        this.filteredData = this.filteredData.filter(function (item) {
+          return item.municipality.id == municipality_id;
+        });
+      }
+    },
+    formatDate: function formatDate(inputDate) {
+      var option1 = {
+        weekday: "short",
+        year: "numeric",
+        month: "short",
+        day: "numeric"
+      };
+      var option2 = {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true
+      };
+      var today = new Date();
+      var date = new Date(inputDate);
+      var formatedDate = date.toLocaleDateString("en-US", option1);
+      var formatedTime = date.toLocaleString("en-US", option2); //if today
+
+      if (date.setHours(0, 0, 0, 0) == today.setHours(0, 0, 0, 0)) {
+        return "Today, ".concat(formatedTime);
+      } else {
+        return "".concat(formatedDate, " | ").concat(formatedTime);
+      }
+    },
+    classICU: function classICU(occupied, capacity) {
+      return {
+        "bg-yellow-100": capacity - occupied >= 1
+      };
+    },
+    classIso: function classIso(occupied, capacity) {
+      return {
+        "bg-blue-100": capacity - occupied >= 1
+      };
+    },
+    classWard: function classWard(occupied, capacity) {
+      return {
+        "bg-green-100": capacity - occupied >= 1
+      };
+    },
+    classVenti: function classVenti(val) {
+      return {
+        "bg-purple-100": val >= 1
+      };
+    },
+    classHasToday: function classHasToday(str) {
+      return {
+        "bg-green-200": str.includes("Today")
+      };
     }
   }
 });
@@ -4075,6 +4437,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var vue_chartjs__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vue-chartjs */ "./node_modules/vue-chartjs/es/index.js");
+/* harmony import */ var chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chartjs-plugin-datalabels */ "./node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js");
+/* harmony import */ var chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1__);
+
 
 var reactiveProp = vue_chartjs__WEBPACK_IMPORTED_MODULE_0__.mixins.reactiveProp;
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -4082,9 +4447,203 @@ var reactiveProp = vue_chartjs__WEBPACK_IMPORTED_MODULE_0__.mixins.reactiveProp;
   mixins: [reactiveProp],
   props: ["options"],
   mounted: function mounted() {
-    // this.chartData is created in the mixin.
+    this.addPlugin((chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1___default())); // Add margin below the line chart Legend
+
+    this.addPlugin({
+      beforeInit: function beforeInit(chart, options) {
+        chart.legend.afterFit = function () {
+          this.height = this.height + 15;
+        };
+      }
+    }); // this.chartData is created in the mixin.
     // If you want to pass options please create a local options object
+
     this.renderChart(this.chartData, this.options);
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=script&lang=js&":
+/*!************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=script&lang=js& ***!
+  \************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _services_MunicipalityService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/MunicipalityService.js */ "./resources/js/services/MunicipalityService.js");
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]); if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  data: function data() {
+    return {
+      loaded: false,
+      selectedBedTotal: 1,
+      //e.g. Bed Capacity, Occupied Bed
+      municipalitiesData: []
+    };
+  },
+  created: function created() {
+    var _this = this;
+
+    _services_MunicipalityService_js__WEBPACK_IMPORTED_MODULE_0__.default.getMunicipalities().then(function (res) {
+      _this.loaded = false;
+      _this.municipalitiesData = res.data.data;
+      _this.loaded = true;
+    })["catch"](function (err) {
+      console.log("There was an error:", err);
+    });
+  },
+  methods: {
+    classObj: function classObj(val, color) {
+      var isOccupiedOverCapacity = String(val).includes("/"); //Occupied Bed/Bed Capacity e.g. 1/3
+
+      if (isOccupiedOverCapacity) {
+        var _ref;
+
+        var _val$split = val.split("/"),
+            _val$split2 = _slicedToArray(_val$split, 2),
+            occ = _val$split2[0],
+            cap = _val$split2[1];
+
+        return _ref = {}, _defineProperty(_ref, "bg-".concat(color, "-100"), cap - occ >= 1), _defineProperty(_ref, "bg-red-200", occ != 0 && occ == cap || occ > cap), _ref;
+      }
+
+      return _defineProperty({}, "bg-".concat(color, "-100"), val >= 1);
+    },
+    showSelectedBedTotal: function showSelectedBedTotal(mun, bedType) {
+      var selected = this.selectedBedTotal;
+      return selected == 1 ? mun["total_".concat(bedType, "_capacity")] : selected == 2 ? mun["total_".concat(bedType, "_occupied")] : selected == 3 ? mun["total_".concat(bedType, "_capacity")] - mun["total_".concat(bedType, "_occupied")] : selected == 4 ? mun["total_".concat(bedType, "_occupied")] + "/" + mun["total_".concat(bedType, "_capacity")] : "";
+    }
+  },
+  computed: {
+    title: function title() {
+      if (this.selectedBedTotal == 1) return "Bed Capacity";
+      if (this.selectedBedTotal == 2) return "Occupied Bed";
+      if (this.selectedBedTotal == 3) return "Vacant Bed";
+      if (this.selectedBedTotal == 4) return "Occupied Bed/Bed Capacity";
+    },
+    text: function text() {
+      if (this.selectedBedTotal == 2) return "Occupied";
+      if (this.selectedBedTotal == 3) return "Vacant";
+      return "Total";
+    }
   }
 });
 
@@ -4094,23 +4653,21 @@ var reactiveProp = vue_chartjs__WEBPACK_IMPORTED_MODULE_0__.mixins.reactiveProp;
 /*!*****************************!*\
   !*** ./resources/js/app.js ***!
   \*****************************/
-/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+/***/ ((__unused_webpack_module, __unused_webpack_exports, __webpack_require__) => {
 
-"use strict";
-__webpack_require__.r(__webpack_exports__);
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! chart.js */ "./node_modules/chart.js/dist/Chart.js");
-/* harmony import */ var chart_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(chart_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! chartjs-plugin-datalabels */ "./node_modules/chartjs-plugin-datalabels/dist/chartjs-plugin-datalabels.js");
-/* harmony import */ var chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1__);
 __webpack_require__(/*! ./bootstrap */ "./resources/js/bootstrap.js");
 
 __webpack_require__(/*! alpinejs */ "./node_modules/alpinejs/dist/alpine.js");
 
 window.Vue = __webpack_require__(/*! vue */ "./node_modules/vue/dist/vue.esm.js").default;
+/**
+import { Chart } from "chart.js";
+import ChartDataLabels from "chartjs-plugin-datalabels";
 
- // Register the plugin to all charts:
+// Register the plugin to all charts:
+Chart.plugins.register(ChartDataLabels);
+ */
 
-chart_js__WEBPACK_IMPORTED_MODULE_0__.Chart.plugins.register((chartjs_plugin_datalabels__WEBPACK_IMPORTED_MODULE_1___default()));
 /**
  * The following block of code may be used to automatically register your
  * Vue components. It will recursively scan this directory for the Vue
@@ -4168,10 +4725,38 @@ window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 /***/ }),
 
-/***/ "./resources/js/services/ActivityService.js":
-/*!**************************************************!*\
-  !*** ./resources/js/services/ActivityService.js ***!
-  \**************************************************/
+/***/ "./resources/js/services/HealthFacilityService.js":
+/*!********************************************************!*\
+  !*** ./resources/js/services/HealthFacilityService.js ***!
+  \********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var apiClient = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  withCredentials: false,
+  // This is the default
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json"
+  }
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  getHealthFacilities: function getHealthFacilities() {
+    return apiClient.get("/health-facilities");
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/services/HistoryService.js":
+/*!*************************************************!*\
+  !*** ./resources/js/services/HistoryService.js ***!
+  \*************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -4190,12 +4775,37 @@ var apiClient = axios.create({
 });
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   // should be yyyy-mm-dd format
-  getActivities: function getActivities(startDate, endDate) {
-    return apiClient.get("/activities?_startDate=" + startDate + "&_endDate=" + endDate);
-  } //   getEvent(id) {
-  //     return apiClient.get('events/' + id);
-  //   },
+  getHistories: function getHistories(startDate, endDate) {
+    return apiClient.get("/histories?_startDate=" + startDate + "&_endDate=" + endDate);
+  }
+});
 
+/***/ }),
+
+/***/ "./resources/js/services/MunicipalityService.js":
+/*!******************************************************!*\
+  !*** ./resources/js/services/MunicipalityService.js ***!
+  \******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var apiClient = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  withCredentials: false,
+  // This is the default
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json"
+  }
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  getMunicipalities: function getMunicipalities() {
+    return apiClient.get("/municipalities");
+  }
 });
 
 /***/ }),
@@ -21769,6 +22379,130 @@ return plugin;
 
 })));
 
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true&":
+/*!**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true& ***!
+  \**********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.tableFixHead thead th[data-v-8e158758] {\r\n    position: sticky;\r\n    top: 0;\r\n    z-index: 1;\n}\n.min-width[data-v-8e158758] {\r\n    min-width: 140px;\n}\r\n/* table {\r\n    border-collapse: collapse;\r\n} */\ntr[data-v-8e158758] {\r\n    border: 0.5px solid #ccc;\n}\n.table-min-height[data-v-8e158758] {\r\n    height: 420px;\n}\r\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true&":
+/*!********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true& ***!
+  \********************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../../node_modules/css-loader/dist/runtime/api.js */ "./node_modules/css-loader/dist/runtime/api.js");
+/* harmony import */ var _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0__);
+// Imports
+
+var ___CSS_LOADER_EXPORT___ = _node_modules_css_loader_dist_runtime_api_js__WEBPACK_IMPORTED_MODULE_0___default()(function(i){return i[1]});
+// Module
+___CSS_LOADER_EXPORT___.push([module.id, "\n.tableFixHead thead th[data-v-6e9b98d7] {\r\n    position: sticky;\r\n    top: 0;\r\n    z-index: 1;\n}\ntr[data-v-6e9b98d7] {\r\n    border: 0.5px solid #ccc;\n}\r\n", ""]);
+// Exports
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (___CSS_LOADER_EXPORT___);
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/dist/runtime/api.js":
+/*!*****************************************************!*\
+  !*** ./node_modules/css-loader/dist/runtime/api.js ***!
+  \*****************************************************/
+/***/ ((module) => {
+
+"use strict";
+
+
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+*/
+// css base code, injected by the css-loader
+// eslint-disable-next-line func-names
+module.exports = function (cssWithMappingToString) {
+  var list = []; // return the list of modules as css string
+
+  list.toString = function toString() {
+    return this.map(function (item) {
+      var content = cssWithMappingToString(item);
+
+      if (item[2]) {
+        return "@media ".concat(item[2], " {").concat(content, "}");
+      }
+
+      return content;
+    }).join("");
+  }; // import a list of modules into the list
+  // eslint-disable-next-line func-names
+
+
+  list.i = function (modules, mediaQuery, dedupe) {
+    if (typeof modules === "string") {
+      // eslint-disable-next-line no-param-reassign
+      modules = [[null, modules, ""]];
+    }
+
+    var alreadyImportedModules = {};
+
+    if (dedupe) {
+      for (var i = 0; i < this.length; i++) {
+        // eslint-disable-next-line prefer-destructuring
+        var id = this[i][0];
+
+        if (id != null) {
+          alreadyImportedModules[id] = true;
+        }
+      }
+    }
+
+    for (var _i = 0; _i < modules.length; _i++) {
+      var item = [].concat(modules[_i]);
+
+      if (dedupe && alreadyImportedModules[item[0]]) {
+        // eslint-disable-next-line no-continue
+        continue;
+      }
+
+      if (mediaQuery) {
+        if (!item[2]) {
+          item[2] = mediaQuery;
+        } else {
+          item[2] = "".concat(mediaQuery, " and ").concat(item[2]);
+        }
+      }
+
+      list.push(item);
+    }
+  };
+
+  return list;
+};
 
 /***/ }),
 
@@ -60944,6 +61678,47 @@ component.options.__file = "resources/js/components/ActivityList.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/HealthFacilityTable.vue":
+/*!*********************************************************!*\
+  !*** ./resources/js/components/HealthFacilityTable.vue ***!
+  \*********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _HealthFacilityTable_vue_vue_type_template_id_8e158758_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true& */ "./resources/js/components/HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true&");
+/* harmony import */ var _HealthFacilityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./HealthFacilityTable.vue?vue&type=script&lang=js& */ "./resources/js/components/HealthFacilityTable.vue?vue&type=script&lang=js&");
+/* harmony import */ var _HealthFacilityTable_vue_vue_type_style_index_0_id_8e158758_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true& */ "./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
+  _HealthFacilityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _HealthFacilityTable_vue_vue_type_template_id_8e158758_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _HealthFacilityTable_vue_vue_type_template_id_8e158758_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "8e158758",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/HealthFacilityTable.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/LineChart.vue":
 /*!***********************************************!*\
   !*** ./resources/js/components/LineChart.vue ***!
@@ -60982,6 +61757,47 @@ component.options.__file = "resources/js/components/LineChart.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/MunicipalityTable.vue":
+/*!*******************************************************!*\
+  !*** ./resources/js/components/MunicipalityTable.vue ***!
+  \*******************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true& */ "./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true&");
+/* harmony import */ var _MunicipalityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./MunicipalityTable.vue?vue&type=script&lang=js& */ "./resources/js/components/MunicipalityTable.vue?vue&type=script&lang=js&");
+/* harmony import */ var _MunicipalityTable_vue_vue_type_style_index_0_id_6e9b98d7_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true& */ "./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+;
+
+
+/* normalize component */
+
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_3__.default)(
+  _MunicipalityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "6e9b98d7",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/MunicipalityTable.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/ActivityList.vue?vue&type=script&lang=js&":
 /*!***************************************************************************!*\
   !*** ./resources/js/components/ActivityList.vue?vue&type=script&lang=js& ***!
@@ -60998,6 +61814,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/HealthFacilityTable.vue?vue&type=script&lang=js&":
+/*!**********************************************************************************!*\
+  !*** ./resources/js/components/HealthFacilityTable.vue?vue&type=script&lang=js& ***!
+  \**********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./HealthFacilityTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/LineChart.vue?vue&type=script&lang=js&":
 /*!************************************************************************!*\
   !*** ./resources/js/components/LineChart.vue?vue&type=script&lang=js& ***!
@@ -61011,6 +61843,22 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ });
 /* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LineChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./LineChart.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/LineChart.vue?vue&type=script&lang=js&");
  /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_LineChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
+/***/ "./resources/js/components/MunicipalityTable.vue?vue&type=script&lang=js&":
+/*!********************************************************************************!*\
+  !*** ./resources/js/components/MunicipalityTable.vue?vue&type=script&lang=js& ***!
+  \********************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./MunicipalityTable.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -61031,6 +61879,74 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true&":
+/*!****************************************************************************************************!*\
+  !*** ./resources/js/components/HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true& ***!
+  \****************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_template_id_8e158758_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_template_id_8e158758_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_template_id_8e158758_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true&":
+/*!**************************************************************************************************!*\
+  !*** ./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true& ***!
+  \**************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true&":
+/*!******************************************************************************************************************!*\
+  !*** ./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true& ***!
+  \******************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_style_index_0_id_8e158758_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true&");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_style_index_0_id_8e158758_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_style_index_0_id_8e158758_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_style_index_0_id_8e158758_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityTable_vue_vue_type_style_index_0_id_8e158758_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
+/***/ "./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true&":
+/*!****************************************************************************************************************!*\
+  !*** ./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true& ***!
+  \****************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_style_index_0_id_6e9b98d7_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-style-loader/index.js!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true& */ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true&");
+/* harmony import */ var _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_style_index_0_id_6e9b98d7_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(_node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_style_index_0_id_6e9b98d7_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__);
+/* harmony reexport (unknown) */ var __WEBPACK_REEXPORT_OBJECT__ = {};
+/* harmony reexport (unknown) */ for(const __WEBPACK_IMPORT_KEY__ in _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_style_index_0_id_6e9b98d7_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__) if(__WEBPACK_IMPORT_KEY__ !== "default") __WEBPACK_REEXPORT_OBJECT__[__WEBPACK_IMPORT_KEY__] = () => _node_modules_vue_style_loader_index_js_node_modules_css_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_1_node_modules_vue_loader_lib_loaders_stylePostLoader_js_node_modules_postcss_loader_dist_cjs_js_clonedRuleSet_9_0_rules_0_use_2_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_style_index_0_id_6e9b98d7_lang_css_scoped_true___WEBPACK_IMPORTED_MODULE_0__[__WEBPACK_IMPORT_KEY__]
+/* harmony reexport (unknown) */ __webpack_require__.d(__webpack_exports__, __WEBPACK_REEXPORT_OBJECT__);
+
+
+/***/ }),
+
 /***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true&":
 /*!************************************************************************************************************************************************************************************************************************************!*\
   !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true& ***!
@@ -61047,64 +61963,63 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "div",
-    [
-      _c(
-        "div",
-        {},
-        [
-          _c("datepicker", {
-            attrs: {
-              "input-class": "border",
-              placeholder: "Date From",
-              "full-month-name": true,
-              "clear-button": true
+  return _c("div", { staticClass: "shadow-md border rounded-lg p-5 mb-10" }, [
+    _c(
+      "div",
+      { staticClass: "flex flex-col md:flex-row mt-5 mb-2 text-gray-600" },
+      [
+        _c("datepicker", {
+          attrs: {
+            "input-class":
+              "text-sm mb-2 md:mb-0 border w-11/12 md:w-auto p-1 rounded",
+            placeholder: "From",
+            "full-month-name": true,
+            "clear-button": true
+          },
+          model: {
+            value: _vm.dateFrom,
+            callback: function($$v) {
+              _vm.dateFrom = $$v
             },
-            model: {
-              value: _vm.dateFrom,
-              callback: function($$v) {
-                _vm.dateFrom = $$v
-              },
-              expression: "dateFrom"
-            }
-          }),
-          _vm._v(" "),
-          _c("datepicker", {
-            attrs: {
-              "input-class": "border",
-              placeholder: "To",
-              "full-month-name": true,
-              "clear-button": true
+            expression: "dateFrom"
+          }
+        }),
+        _vm._v(" "),
+        _c("datepicker", {
+          attrs: {
+            "input-class":
+              "text-sm mb-2 md:mb-0 border p-1 w-11/12 md:w-auto rounded md:ml-4",
+            placeholder: "To",
+            "full-month-name": true,
+            "clear-button": true
+          },
+          model: {
+            value: _vm.dateTo,
+            callback: function($$v) {
+              _vm.dateTo = $$v
             },
-            model: {
-              value: _vm.dateTo,
-              callback: function($$v) {
-                _vm.dateTo = $$v
-              },
-              expression: "dateTo"
-            }
-          }),
-          _vm._v(" "),
-          _c(
-            "button",
-            {
-              on: {
-                click: function($event) {
-                  return _vm.setActivities(_vm.dateFrom, _vm.dateTo)
-                }
+            expression: "dateTo"
+          }
+        }),
+        _vm._v(" "),
+        _c(
+          "button",
+          {
+            staticClass:
+              "w-11/12 md:w-auto md:ml-4  px-3 flex-none py-1 text-sm font-medium leading-5\n             text-white transition-colors duration-150 border \n             border-transparent rounded-md bg-blue-500 hover:bg-blue-600 \n             focus:outline-none",
+            on: {
+              click: function($event) {
+                return _vm.setHistories(_vm.dateFrom, _vm.dateTo)
               }
-            },
-            [_vm._v("\n            Filter Date\n        ")]
-          )
-        ],
-        1
-      ),
-      _vm._v(" "),
-      _c("line-chart", {
-        attrs: { "chart-data": _vm.datacollection, options: _vm.options }
-      }),
-      _vm._v(" "),
+            }
+          },
+          [_vm._v("\n            Filter\n        ")]
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c("div", { staticClass: "mb-5" }, [
       _c("input", {
         directives: [
           {
@@ -61114,6 +62029,7 @@ var render = function() {
             expression: "checked"
           }
         ],
+        staticClass: "align-middle",
         attrs: { type: "checkbox", id: "checkbox" },
         domProps: {
           checked: Array.isArray(_vm.checked)
@@ -61146,13 +62062,671 @@ var render = function() {
         }
       }),
       _vm._v(" "),
-      _c("label", { attrs: { for: "checkbox" } }, [
-        _vm._v("Last update per day")
+      _c(
+        "label",
+        { staticClass: "text-sm text-gray-600", attrs: { for: "checkbox" } },
+        [_vm._v("Last update per day")]
+      )
+    ]),
+    _vm._v(" "),
+    _c(
+      "div",
+      [
+        _c("line-chart", {
+          attrs: { "chart-data": _vm.datacollection, options: _vm.options }
+        })
+      ],
+      1
+    )
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true&":
+/*!*******************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=template&id=8e158758&scoped=true& ***!
+  \*******************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "overflow-auto" }, [
+    _vm._m(0),
+    _vm._v(" "),
+    _c("div", { staticClass: " shadow-md border rounded-lg p-5 mb-10" }, [
+      _c("div", { staticClass: "grid grid-cols-4 gap-4 mb-5" }, [
+        _c("div", { staticClass: "col-span-4 md:col-span-1" }, [
+          _c("label", { staticClass: "block text-sm" }, [
+            _c("span", { staticClass: "text-gray-700 dark:text-gray-400" }, [
+              _vm._v("Name")
+            ]),
+            _vm._v(" "),
+            _c("input", {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.nameQuery,
+                  expression: "nameQuery"
+                }
+              ],
+              staticClass:
+                "border w-full border-gray-200 rounded block mt-1 text-sm\n        dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400\n        focus:outline-none focus:shadow-outline-purple dark:text-gray-300\n        dark:focus:shadow-outline-gray form-input",
+              attrs: { name: "name", autocomplete: "off" },
+              domProps: { value: _vm.nameQuery },
+              on: {
+                input: function($event) {
+                  if ($event.target.composing) {
+                    return
+                  }
+                  _vm.nameQuery = $event.target.value
+                }
+              }
+            })
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-span-4 md:col-span-1" }, [
+          _c("label", { staticClass: "block text-sm pl-1" }, [
+            _c("span", { staticClass: "text-gray-700 dark:text-gray-400" }, [
+              _vm._v("\n                        Type\n                    ")
+            ]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedType,
+                    expression: "selectedType"
+                  }
+                ],
+                staticClass:
+                  "block w-full mt-1 rounded text-sm border dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selectedType = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              [
+                _c("option", { attrs: { value: "All" } }, [_vm._v("All")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "0" } }, [_vm._v("Hospitals")]),
+                _vm._v(" "),
+                _c("option", { attrs: { value: "1" } }, [
+                  _vm._v("Isolation Facilities")
+                ])
+              ]
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "col-span-4 md:col-span-1" }, [
+          _c("label", { staticClass: "block text-sm pl-1" }, [
+            _c("span", { staticClass: "text-gray-700 dark:text-gray-400" }, [
+              _vm._v(
+                "\n                        Municipality\n                    "
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "select",
+              {
+                directives: [
+                  {
+                    name: "model",
+                    rawName: "v-model",
+                    value: _vm.selectedMunicipality,
+                    expression: "selectedMunicipality"
+                  }
+                ],
+                staticClass:
+                  "block w-full mt-1 rounded text-sm border dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray",
+                on: {
+                  change: function($event) {
+                    var $$selectedVal = Array.prototype.filter
+                      .call($event.target.options, function(o) {
+                        return o.selected
+                      })
+                      .map(function(o) {
+                        var val = "_value" in o ? o._value : o.value
+                        return val
+                      })
+                    _vm.selectedMunicipality = $event.target.multiple
+                      ? $$selectedVal
+                      : $$selectedVal[0]
+                  }
+                }
+              },
+              [
+                _c("option", { attrs: { value: "All" } }, [_vm._v("All")]),
+                _vm._v(" "),
+                _vm._l(_vm.municipalities, function(m) {
+                  return _c("option", { domProps: { value: m.id } }, [
+                    _vm._v(_vm._s(m.name))
+                  ])
+                })
+              ],
+              2
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "flex items-end col-span-4 md:col-span-1" }, [
+          _c(
+            "button",
+            {
+              staticClass:
+                "w-full md:align-bottom md:w-36 text-sm focus:outline-none border border-transparent py-2 px-3\n                    rounded-lg shadow-sm text-center text-white bg-blue-500 hover:bg-blue-600 font-medium",
+              on: { click: _vm.setFilteredData }
+            },
+            [_vm._v("\n                    Filter\n                ")]
+          )
+        ])
       ]),
-      _vm._v(" |\n\n    ")
-    ],
-    1
-  )
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "overflow-auto tableFixHead mb-10 table-min-height" },
+        [
+          _c("table", { attrs: { width: "100%" } }, [
+            _vm._m(1),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.filteredData, function(ref, index) {
+                var name = ref.name
+                var occupied_icu = ref.occupied_icu
+                var occupied_ward = ref.occupied_ward
+                var occupied_isolation = ref.occupied_isolation
+                var icu_capacity = ref.icu_capacity
+                var isolation_capacity = ref.isolation_capacity
+                var ward_capacity = ref.ward_capacity
+                var max_ventilator = ref.max_ventilator
+                var updated_at = ref.updated_at
+                return _vm.loaded
+                  ? _c(
+                      "tr",
+                      {
+                        key: index,
+                        staticClass: "hover:bg-gray-100 text-gray-600"
+                      },
+                      [
+                        _c("td", { staticClass: "px-2 py-3 bg-opacity-80" }, [
+                          _vm._v(_vm._s(name))
+                        ]),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          {
+                            staticClass: "px-2 py-3 bg-opacity-80",
+                            class: _vm.classICU(occupied_icu, icu_capacity)
+                          },
+                          [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(occupied_icu) +
+                                "/" +
+                                _vm._s(icu_capacity) +
+                                "\n                        "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          {
+                            staticClass: "px-2 py-3 bg-opacity-80",
+                            class: _vm.classIso(
+                              occupied_isolation,
+                              isolation_capacity
+                            )
+                          },
+                          [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(occupied_isolation) +
+                                "/" +
+                                _vm._s(isolation_capacity) +
+                                "\n                        "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          {
+                            staticClass: "px-2 py-3 bg-opacity-80",
+                            class: _vm.classWard(occupied_ward, ward_capacity)
+                          },
+                          [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(occupied_ward) +
+                                "/" +
+                                _vm._s(ward_capacity) +
+                                "\n                        "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          { staticClass: "px-2 py-3 bg-opacity-80 text-sm" },
+                          [
+                            _c(
+                              "span",
+                              {
+                                staticClass: "p-2 rounded",
+                                class: _vm.classHasToday(
+                                  _vm.formatDate(updated_at)
+                                )
+                              },
+                              [_vm._v(_vm._s(_vm.formatDate(updated_at)))]
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          {
+                            staticClass: "px-2 py-3 bg-opacity-80",
+                            class: _vm.classVenti(max_ventilator)
+                          },
+                          [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(max_ventilator) +
+                                "\n                        "
+                            )
+                          ]
+                        )
+                      ]
+                    )
+                  : _vm._e()
+              }),
+              0
+            )
+          ]),
+          _vm._v(" "),
+          _vm.loaded && !_vm.filteredData.length
+            ? _c("div", { staticClass: "text-center mt-5" }, [
+                _vm._v("\n                No Record Found\n            ")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.loaded
+            ? _c("div", { staticClass: "text-center mt-5" }, [
+                _vm._v("Loading...")
+              ])
+            : _vm._e()
+        ]
+      )
+    ])
+  ])
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "h1",
+      {
+        staticClass: "text-xl mb-2 font-semibold text-gray-700 text-opacity-95"
+      },
+      [
+        _c("span", { staticClass: "text-yellow-500 mr-1 font-thin" }, [
+          _vm._v("#")
+        ]),
+        _vm._v("\n        Hospitals & Health Facilities\n    ")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c(
+          "th",
+          { staticClass: "bg-blue-500 text-white px-2 py-3 font-normal" },
+          [
+            _vm._v(
+              "\n                            Name\n                        "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass:
+              "bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
+          },
+          [
+            _vm._v(
+              "\n                            ICU Beds\n                        "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass:
+              "bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
+          },
+          [
+            _vm._v(
+              "\n                            Isolation Beds\n                        "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass:
+              "bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
+          },
+          [
+            _vm._v(
+              "\n                            Ward Beds\n                        "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass:
+              "bg-blue-500 text-white px-2 py-3 font-normal text-left"
+          },
+          [
+            _vm._v(
+              "\n                            Last update\n                        "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass:
+              "bg-blue-500 text-white px-2 py-3 font-normal text-left"
+          },
+          [
+            _vm._v(
+              "\n                            Ventilators\n                        "
+            )
+          ]
+        )
+      ])
+    ])
+  }
+]
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true&":
+/*!*****************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true& ***!
+  \*****************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", [
+    _c(
+      "h1",
+      {
+        staticClass: "text-xl mb-2 font-semibold text-gray-700 text-opacity-95"
+      },
+      [
+        _c("span", { staticClass: "text-yellow-500 mr-1 font-thin" }, [
+          _vm._v("#")
+        ]),
+        _vm._v("\n        " + _vm._s(_vm.title) + " Per Municipality\n    ")
+      ]
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "overflow-auto shadow-md border rounded-lg p-5 mb-10" },
+      [
+        _c("label", { staticClass: "block text-sm pl-1 mb-5" }, [
+          _c("span", { staticClass: "text-gray-700 dark:text-gray-400" }, [
+            _vm._v("\n                Select here:\n            ")
+          ]),
+          _vm._v(" "),
+          _c(
+            "select",
+            {
+              directives: [
+                {
+                  name: "model",
+                  rawName: "v-model",
+                  value: _vm.selectedBedTotal,
+                  expression: "selectedBedTotal"
+                }
+              ],
+              staticClass:
+                "block w-full mt-1 rounded text-sm border dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray",
+              on: {
+                change: function($event) {
+                  var $$selectedVal = Array.prototype.filter
+                    .call($event.target.options, function(o) {
+                      return o.selected
+                    })
+                    .map(function(o) {
+                      var val = "_value" in o ? o._value : o.value
+                      return val
+                    })
+                  _vm.selectedBedTotal = $event.target.multiple
+                    ? $$selectedVal
+                    : $$selectedVal[0]
+                }
+              }
+            },
+            [
+              _c("option", { attrs: { value: "1" } }, [_vm._v("Bed Capacity")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "2" } }, [_vm._v("Occupied Bed")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "3" } }, [_vm._v("Vacant Bed")]),
+              _vm._v(" "),
+              _c("option", { attrs: { value: "4" } }, [
+                _vm._v("Occupied Bed/Bed Capacity")
+              ])
+            ]
+          )
+        ]),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass: "tableFixHead mb-2 overflow-auto",
+            staticStyle: { height: "490px" }
+          },
+          [
+            _c("table", { attrs: { width: "100%" } }, [
+              _c("thead", [
+                _c(
+                  "tr",
+                  {
+                    staticClass:
+                      "bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-600 "
+                  },
+                  [
+                    _c(
+                      "th",
+                      {
+                        staticClass: "text-white p-2 font-normal",
+                        attrs: { width: "200" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                            Municipality\n                        "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c("th", { staticClass: "text-white p-2 font-normal" }, [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.text) +
+                          " ICU Beds\n                        "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("th", { staticClass: "text-white p-2 font-normal" }, [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.text) +
+                          " Isolation Beds\n                        "
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("th", { staticClass: "text-white p-2 font-normal" }, [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.text) +
+                          " Ward Beds\n                        "
+                      )
+                    ])
+                  ]
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "tbody",
+                _vm._l(_vm.municipalitiesData, function(m) {
+                  return _c(
+                    "tr",
+                    { key: m.id, staticClass: "hover:bg-gray-100" },
+                    [
+                      _c("td", { staticClass: "p-2 bg-opacity-80" }, [
+                        _vm._v(_vm._s(m.name))
+                      ]),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          staticClass: "p-2 bg-opacity-80",
+                          class: _vm.classObj(
+                            _vm.showSelectedBedTotal(m, "icu"),
+                            "yellow"
+                          ),
+                          attrs: { width: "150" }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(_vm.showSelectedBedTotal(m, "icu")) +
+                              "\n                        "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          staticClass: "p-2 bg-opacity-80",
+                          class: _vm.classObj(
+                            _vm.showSelectedBedTotal(m, "isolation"),
+                            "blue"
+                          ),
+                          attrs: { width: "150" }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(_vm.showSelectedBedTotal(m, "isolation")) +
+                              "\n                        "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "td",
+                        {
+                          staticClass: "p-2 bg-opacity-80",
+                          class: _vm.classObj(
+                            _vm.showSelectedBedTotal(m, "ward"),
+                            "green"
+                          ),
+                          attrs: { width: "150" }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            " +
+                              _vm._s(_vm.showSelectedBedTotal(m, "ward")) +
+                              "\n                        "
+                          )
+                        ]
+                      )
+                    ]
+                  )
+                }),
+                0
+              )
+            ]),
+            _vm._v(" "),
+            _vm.loaded && !_vm.municipalitiesData.length
+              ? _c("div", { staticClass: "text-center mt-5" }, [
+                  _vm._v("\n                No Record Found\n            ")
+                ])
+              : _vm._e(),
+            _vm._v(" "),
+            !_vm.loaded
+              ? _c("div", { staticClass: "text-center mt-5" }, [
+                  _vm._v("Loading...")
+                ])
+              : _vm._e()
+          ]
+        )
+      ]
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -61269,6 +62843,328 @@ function normalizeComponent (
     exports: scriptExports,
     options: options
   }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true&":
+/*!***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true& ***!
+  \***************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityTable.vue?vue&type=style&index=0&id=8e158758&lang=css&scoped=true&");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("28853bf3", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true&":
+/*!*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-style-loader/index.js!./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true& ***!
+  \*************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************************/
+/***/ ((module, __unused_webpack_exports, __webpack_require__) => {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__(/*! !!../../../node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!../../../node_modules/vue-loader/lib/loaders/stylePostLoader.js!../../../node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true& */ "./node_modules/css-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[1]!./node_modules/vue-loader/lib/loaders/stylePostLoader.js!./node_modules/postcss-loader/dist/cjs.js??clonedRuleSet-9[0].rules[0].use[2]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=style&index=0&id=6e9b98d7&lang=css&scoped=true&");
+if(content.__esModule) content = content.default;
+if(typeof content === 'string') content = [[module.id, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var add = __webpack_require__(/*! !../../../node_modules/vue-style-loader/lib/addStylesClient.js */ "./node_modules/vue-style-loader/lib/addStylesClient.js").default
+var update = add("12913c6c", content, false, {});
+// Hot Module Replacement
+if(false) {}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/lib/addStylesClient.js":
+/*!**************************************************************!*\
+  !*** ./node_modules/vue-style-loader/lib/addStylesClient.js ***!
+  \**************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ addStylesClient)
+/* harmony export */ });
+/* harmony import */ var _listToStyles__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./listToStyles */ "./node_modules/vue-style-loader/lib/listToStyles.js");
+/*
+  MIT License http://www.opensource.org/licenses/mit-license.php
+  Author Tobias Koppers @sokra
+  Modified by Evan You @yyx990803
+*/
+
+
+
+var hasDocument = typeof document !== 'undefined'
+
+if (typeof DEBUG !== 'undefined' && DEBUG) {
+  if (!hasDocument) {
+    throw new Error(
+    'vue-style-loader cannot be used in a non-browser environment. ' +
+    "Use { target: 'node' } in your Webpack config to indicate a server-rendering environment."
+  ) }
+}
+
+/*
+type StyleObject = {
+  id: number;
+  parts: Array<StyleObjectPart>
+}
+
+type StyleObjectPart = {
+  css: string;
+  media: string;
+  sourceMap: ?string
+}
+*/
+
+var stylesInDom = {/*
+  [id: number]: {
+    id: number,
+    refs: number,
+    parts: Array<(obj?: StyleObjectPart) => void>
+  }
+*/}
+
+var head = hasDocument && (document.head || document.getElementsByTagName('head')[0])
+var singletonElement = null
+var singletonCounter = 0
+var isProduction = false
+var noop = function () {}
+var options = null
+var ssrIdKey = 'data-vue-ssr-id'
+
+// Force single-tag solution on IE6-9, which has a hard limit on the # of <style>
+// tags it will allow on a page
+var isOldIE = typeof navigator !== 'undefined' && /msie [6-9]\b/.test(navigator.userAgent.toLowerCase())
+
+function addStylesClient (parentId, list, _isProduction, _options) {
+  isProduction = _isProduction
+
+  options = _options || {}
+
+  var styles = (0,_listToStyles__WEBPACK_IMPORTED_MODULE_0__.default)(parentId, list)
+  addStylesToDom(styles)
+
+  return function update (newList) {
+    var mayRemove = []
+    for (var i = 0; i < styles.length; i++) {
+      var item = styles[i]
+      var domStyle = stylesInDom[item.id]
+      domStyle.refs--
+      mayRemove.push(domStyle)
+    }
+    if (newList) {
+      styles = (0,_listToStyles__WEBPACK_IMPORTED_MODULE_0__.default)(parentId, newList)
+      addStylesToDom(styles)
+    } else {
+      styles = []
+    }
+    for (var i = 0; i < mayRemove.length; i++) {
+      var domStyle = mayRemove[i]
+      if (domStyle.refs === 0) {
+        for (var j = 0; j < domStyle.parts.length; j++) {
+          domStyle.parts[j]()
+        }
+        delete stylesInDom[domStyle.id]
+      }
+    }
+  }
+}
+
+function addStylesToDom (styles /* Array<StyleObject> */) {
+  for (var i = 0; i < styles.length; i++) {
+    var item = styles[i]
+    var domStyle = stylesInDom[item.id]
+    if (domStyle) {
+      domStyle.refs++
+      for (var j = 0; j < domStyle.parts.length; j++) {
+        domStyle.parts[j](item.parts[j])
+      }
+      for (; j < item.parts.length; j++) {
+        domStyle.parts.push(addStyle(item.parts[j]))
+      }
+      if (domStyle.parts.length > item.parts.length) {
+        domStyle.parts.length = item.parts.length
+      }
+    } else {
+      var parts = []
+      for (var j = 0; j < item.parts.length; j++) {
+        parts.push(addStyle(item.parts[j]))
+      }
+      stylesInDom[item.id] = { id: item.id, refs: 1, parts: parts }
+    }
+  }
+}
+
+function createStyleElement () {
+  var styleElement = document.createElement('style')
+  styleElement.type = 'text/css'
+  head.appendChild(styleElement)
+  return styleElement
+}
+
+function addStyle (obj /* StyleObjectPart */) {
+  var update, remove
+  var styleElement = document.querySelector('style[' + ssrIdKey + '~="' + obj.id + '"]')
+
+  if (styleElement) {
+    if (isProduction) {
+      // has SSR styles and in production mode.
+      // simply do nothing.
+      return noop
+    } else {
+      // has SSR styles but in dev mode.
+      // for some reason Chrome can't handle source map in server-rendered
+      // style tags - source maps in <style> only works if the style tag is
+      // created and inserted dynamically. So we remove the server rendered
+      // styles and inject new ones.
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  if (isOldIE) {
+    // use singleton mode for IE9.
+    var styleIndex = singletonCounter++
+    styleElement = singletonElement || (singletonElement = createStyleElement())
+    update = applyToSingletonTag.bind(null, styleElement, styleIndex, false)
+    remove = applyToSingletonTag.bind(null, styleElement, styleIndex, true)
+  } else {
+    // use multi-style-tag mode in all other cases
+    styleElement = createStyleElement()
+    update = applyToTag.bind(null, styleElement)
+    remove = function () {
+      styleElement.parentNode.removeChild(styleElement)
+    }
+  }
+
+  update(obj)
+
+  return function updateStyle (newObj /* StyleObjectPart */) {
+    if (newObj) {
+      if (newObj.css === obj.css &&
+          newObj.media === obj.media &&
+          newObj.sourceMap === obj.sourceMap) {
+        return
+      }
+      update(obj = newObj)
+    } else {
+      remove()
+    }
+  }
+}
+
+var replaceText = (function () {
+  var textStore = []
+
+  return function (index, replacement) {
+    textStore[index] = replacement
+    return textStore.filter(Boolean).join('\n')
+  }
+})()
+
+function applyToSingletonTag (styleElement, index, remove, obj) {
+  var css = remove ? '' : obj.css
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = replaceText(index, css)
+  } else {
+    var cssNode = document.createTextNode(css)
+    var childNodes = styleElement.childNodes
+    if (childNodes[index]) styleElement.removeChild(childNodes[index])
+    if (childNodes.length) {
+      styleElement.insertBefore(cssNode, childNodes[index])
+    } else {
+      styleElement.appendChild(cssNode)
+    }
+  }
+}
+
+function applyToTag (styleElement, obj) {
+  var css = obj.css
+  var media = obj.media
+  var sourceMap = obj.sourceMap
+
+  if (media) {
+    styleElement.setAttribute('media', media)
+  }
+  if (options.ssrId) {
+    styleElement.setAttribute(ssrIdKey, obj.id)
+  }
+
+  if (sourceMap) {
+    // https://developer.chrome.com/devtools/docs/javascript-debugging
+    // this makes source maps inside style tags work properly in Chrome
+    css += '\n/*# sourceURL=' + sourceMap.sources[0] + ' */'
+    // http://stackoverflow.com/a/26603875
+    css += '\n/*# sourceMappingURL=data:application/json;base64,' + btoa(unescape(encodeURIComponent(JSON.stringify(sourceMap)))) + ' */'
+  }
+
+  if (styleElement.styleSheet) {
+    styleElement.styleSheet.cssText = css
+  } else {
+    while (styleElement.firstChild) {
+      styleElement.removeChild(styleElement.firstChild)
+    }
+    styleElement.appendChild(document.createTextNode(css))
+  }
+}
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/lib/listToStyles.js":
+/*!***********************************************************!*\
+  !*** ./node_modules/vue-style-loader/lib/listToStyles.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (/* binding */ listToStyles)
+/* harmony export */ });
+/**
+ * Translates the list format produced by css-loader into something
+ * easier to manipulate.
+ */
+function listToStyles (parentId, list) {
+  var styles = []
+  var newStyles = {}
+  for (var i = 0; i < list.length; i++) {
+    var item = list[i]
+    var id = item[0]
+    var css = item[1]
+    var media = item[2]
+    var sourceMap = item[3]
+    var part = {
+      id: parentId + ':' + i,
+      css: css,
+      media: media,
+      sourceMap: sourceMap
+    }
+    if (!newStyles[id]) {
+      styles.push(newStyles[id] = { id: id, parts: [part] })
+    } else {
+      newStyles[id].parts.push(part)
+    }
+  }
+  return styles
 }
 
 
@@ -75778,7 +77674,9 @@ __vue_render__$4._withStripped = true;
 
 var map = {
 	"./components/ActivityList.vue": "./resources/js/components/ActivityList.vue",
-	"./components/LineChart.vue": "./resources/js/components/LineChart.vue"
+	"./components/HealthFacilityTable.vue": "./resources/js/components/HealthFacilityTable.vue",
+	"./components/LineChart.vue": "./resources/js/components/LineChart.vue",
+	"./components/MunicipalityTable.vue": "./resources/js/components/MunicipalityTable.vue"
 };
 
 

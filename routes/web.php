@@ -1,6 +1,10 @@
 <?php
 
 use App\Http\Controllers\Api\ActivityLogController;
+use App\Http\Controllers\Api\HealthFacilityController as ApiHealthFacilityController;
+use App\Http\Controllers\api\HistoryController;
+use App\Http\Controllers\Api\MunicipalitiesController;
+use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HealthFacilityController;
 use App\Http\Controllers\PatientController;
@@ -17,20 +21,25 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+Route::middleware(['auth'])->group(function () {
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+    // Route::resource('patients', PatientController::class); // hindi na muna gagamitin dahil nag bago ang plano nila
+    Route::get('/health-facilities/{health_facility}/edit-capacity', [HealthFacilityController::class, 'editCapacity'])
+        ->name('edit.capacity');
+    Route::put('/health-facilities/{health_facility}/edit-capacity', [HealthFacilityController::class, 'updateCapacity'])
+        ->name('update.capacity');
+    Route::resource('health-facilities', HealthFacilityController::class);
+
+    Route::get('account', [ChangePasswordController::class, 'index'])->name('edit.account');
+    Route::post('change-password', [ChangePasswordController::class, 'changePassword'])->name('change.password');
 });
-
-// Route::get('/dashboard',[DashboardController::class, 'index'])->middleware(['auth'])->name('dashboard');
-Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard')->middleware('auth');;
-
-Route::resource('patients', PatientController::class)->middleware('auth');
-
-Route::resource('health-facilities', HealthFacilityController::class)->middleware('auth');
 
 // API ROUTE
 Route::prefix('api')->middleware('auth')->group(function () {
+    Route::get('municipalities', [MunicipalitiesController::class, 'index']);
     Route::get('activities', [ActivityLogController::class, 'index']);
+    Route::get('histories', [HistoryController::class, 'index']);
+    Route::get('health-facilities', [ApiHealthFacilityController::class, 'index']);
 });
 
 require __DIR__ . '/auth.php';

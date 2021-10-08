@@ -4,11 +4,14 @@ require("alpinejs");
 
 window.Vue = require("vue").default;
 
+/**
 import { Chart } from "chart.js";
 import ChartDataLabels from "chartjs-plugin-datalabels";
 
 // Register the plugin to all charts:
 Chart.plugins.register(ChartDataLabels);
+ */
+
 
 /**
  * The following block of code may be used to automatically register your
