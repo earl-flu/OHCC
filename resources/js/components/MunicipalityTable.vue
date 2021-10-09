@@ -1,10 +1,10 @@
 <template>
-    <div>
+    <div class="overflow-auto">
         <h1 class="text-xl mb-2 font-semibold text-gray-700 text-opacity-95">
             <span class="text-yellow-500 mr-1 font-thin">#</span>
             {{ title }} Per Municipality
         </h1>
-        <div class="overflow-auto shadow-md border rounded-lg p-5 mb-10">
+        <div class="shadow-md border rounded-lg p-5 mb-10">
             <label class="block text-sm pl-1 mb-5">
                 <span class="text-gray-700 dark:text-gray-400">
                     Select here:

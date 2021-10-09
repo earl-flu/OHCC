@@ -4284,6 +4284,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["municipalities"],
@@ -61963,122 +61964,129 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", { staticClass: "shadow-md border rounded-lg p-5 mb-10" }, [
-    _c(
-      "div",
-      { staticClass: "flex flex-col md:flex-row mt-5 mb-2 text-gray-600" },
-      [
-        _c("datepicker", {
-          attrs: {
-            "input-class":
-              "text-sm mb-2 md:mb-0 border w-11/12 md:w-auto p-1 rounded",
-            placeholder: "From",
-            "full-month-name": true,
-            "clear-button": true
-          },
-          model: {
-            value: _vm.dateFrom,
-            callback: function($$v) {
-              _vm.dateFrom = $$v
+  return _c(
+    "div",
+    { staticClass: "shadow-md border rounded-lg p-5 mb-10 overflow-auto" },
+    [
+      _c(
+        "div",
+        { staticClass: "flex flex-col md:flex-row mt-5 mb-2 text-gray-600" },
+        [
+          _c("datepicker", {
+            attrs: {
+              "input-class":
+                "text-sm mb-2 md:mb-0 border w-11/12 md:w-auto p-1 rounded",
+              placeholder: "From",
+              "full-month-name": true,
+              "clear-button": true
             },
-            expression: "dateFrom"
-          }
-        }),
-        _vm._v(" "),
-        _c("datepicker", {
-          attrs: {
-            "input-class":
-              "text-sm mb-2 md:mb-0 border p-1 w-11/12 md:w-auto rounded md:ml-4",
-            placeholder: "To",
-            "full-month-name": true,
-            "clear-button": true
-          },
-          model: {
-            value: _vm.dateTo,
-            callback: function($$v) {
-              _vm.dateTo = $$v
+            model: {
+              value: _vm.dateFrom,
+              callback: function($$v) {
+                _vm.dateFrom = $$v
+              },
+              expression: "dateFrom"
+            }
+          }),
+          _vm._v(" "),
+          _c("datepicker", {
+            attrs: {
+              "input-class":
+                "text-sm mb-2 md:mb-0 border p-1 w-11/12 md:w-auto rounded md:ml-4",
+              placeholder: "To",
+              "full-month-name": true,
+              "clear-button": true
             },
-            expression: "dateTo"
+            model: {
+              value: _vm.dateTo,
+              callback: function($$v) {
+                _vm.dateTo = $$v
+              },
+              expression: "dateTo"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass:
+                "w-11/12 md:w-auto md:ml-4  px-3 flex-none py-1 text-sm font-medium leading-5\n             text-white transition-colors duration-150 border \n             border-transparent rounded-md bg-blue-500 hover:bg-blue-600 \n             focus:outline-none",
+              on: {
+                click: function($event) {
+                  return _vm.setHistories(_vm.dateFrom, _vm.dateTo)
+                }
+              }
+            },
+            [_vm._v("\n            Filter\n        ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "mb-5" }, [
+        _c("input", {
+          directives: [
+            {
+              name: "model",
+              rawName: "v-model",
+              value: _vm.checked,
+              expression: "checked"
+            }
+          ],
+          staticClass: "align-middle",
+          attrs: { type: "checkbox", id: "checkbox" },
+          domProps: {
+            checked: Array.isArray(_vm.checked)
+              ? _vm._i(_vm.checked, null) > -1
+              : _vm.checked
+          },
+          on: {
+            change: [
+              function($event) {
+                var $$a = _vm.checked,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = null,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.checked = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.checked = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.checked = $$c
+                }
+              },
+              function($event) {
+                return _vm.fillData()
+              }
+            ]
           }
         }),
         _vm._v(" "),
         _c(
-          "button",
-          {
-            staticClass:
-              "w-11/12 md:w-auto md:ml-4  px-3 flex-none py-1 text-sm font-medium leading-5\n             text-white transition-colors duration-150 border \n             border-transparent rounded-md bg-blue-500 hover:bg-blue-600 \n             focus:outline-none",
-            on: {
-              click: function($event) {
-                return _vm.setHistories(_vm.dateFrom, _vm.dateTo)
-              }
-            }
-          },
-          [_vm._v("\n            Filter\n        ")]
+          "label",
+          { staticClass: "text-sm text-gray-600", attrs: { for: "checkbox" } },
+          [_vm._v("Last update per day")]
         )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c("div", { staticClass: "mb-5" }, [
-      _c("input", {
-        directives: [
-          {
-            name: "model",
-            rawName: "v-model",
-            value: _vm.checked,
-            expression: "checked"
-          }
-        ],
-        staticClass: "align-middle",
-        attrs: { type: "checkbox", id: "checkbox" },
-        domProps: {
-          checked: Array.isArray(_vm.checked)
-            ? _vm._i(_vm.checked, null) > -1
-            : _vm.checked
-        },
-        on: {
-          change: [
-            function($event) {
-              var $$a = _vm.checked,
-                $$el = $event.target,
-                $$c = $$el.checked ? true : false
-              if (Array.isArray($$a)) {
-                var $$v = null,
-                  $$i = _vm._i($$a, $$v)
-                if ($$el.checked) {
-                  $$i < 0 && (_vm.checked = $$a.concat([$$v]))
-                } else {
-                  $$i > -1 &&
-                    (_vm.checked = $$a.slice(0, $$i).concat($$a.slice($$i + 1)))
-                }
-              } else {
-                _vm.checked = $$c
-              }
-            },
-            function($event) {
-              return _vm.fillData()
-            }
-          ]
-        }
-      }),
+      ]),
       _vm._v(" "),
       _c(
-        "label",
-        { staticClass: "text-sm text-gray-600", attrs: { for: "checkbox" } },
-        [_vm._v("Last update per day")]
+        "div",
+        { staticStyle: { "min-width": "600px" } },
+        [
+          _c("line-chart", {
+            attrs: { "chart-data": _vm.datacollection, options: _vm.options }
+          })
+        ],
+        1
       )
-    ]),
-    _vm._v(" "),
-    _c(
-      "div",
-      [
-        _c("line-chart", {
-          attrs: { "chart-data": _vm.datacollection, options: _vm.options }
-        })
-      ],
-      1
-    )
-  ])
+    ]
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
@@ -62515,7 +62523,7 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
+  return _c("div", { staticClass: "overflow-auto" }, [
     _c(
       "h1",
       {
@@ -62529,203 +62537,199 @@ var render = function() {
       ]
     ),
     _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "overflow-auto shadow-md border rounded-lg p-5 mb-10" },
-      [
-        _c("label", { staticClass: "block text-sm pl-1 mb-5" }, [
-          _c("span", { staticClass: "text-gray-700 dark:text-gray-400" }, [
-            _vm._v("\n                Select here:\n            ")
-          ]),
-          _vm._v(" "),
-          _c(
-            "select",
-            {
-              directives: [
-                {
-                  name: "model",
-                  rawName: "v-model",
-                  value: _vm.selectedBedTotal,
-                  expression: "selectedBedTotal"
-                }
-              ],
-              staticClass:
-                "block w-full mt-1 rounded text-sm border dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray",
-              on: {
-                change: function($event) {
-                  var $$selectedVal = Array.prototype.filter
-                    .call($event.target.options, function(o) {
-                      return o.selected
-                    })
-                    .map(function(o) {
-                      var val = "_value" in o ? o._value : o.value
-                      return val
-                    })
-                  _vm.selectedBedTotal = $event.target.multiple
-                    ? $$selectedVal
-                    : $$selectedVal[0]
-                }
-              }
-            },
-            [
-              _c("option", { attrs: { value: "1" } }, [_vm._v("Bed Capacity")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "2" } }, [_vm._v("Occupied Bed")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "3" } }, [_vm._v("Vacant Bed")]),
-              _vm._v(" "),
-              _c("option", { attrs: { value: "4" } }, [
-                _vm._v("Occupied Bed/Bed Capacity")
-              ])
-            ]
-          )
+    _c("div", { staticClass: "shadow-md border rounded-lg p-5 mb-10" }, [
+      _c("label", { staticClass: "block text-sm pl-1 mb-5" }, [
+        _c("span", { staticClass: "text-gray-700 dark:text-gray-400" }, [
+          _vm._v("\n                Select here:\n            ")
         ]),
         _vm._v(" "),
         _c(
-          "div",
+          "select",
           {
-            staticClass: "tableFixHead mb-2 overflow-auto",
-            staticStyle: { height: "490px" }
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.selectedBedTotal,
+                expression: "selectedBedTotal"
+              }
+            ],
+            staticClass:
+              "block w-full mt-1 rounded text-sm border dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray",
+            on: {
+              change: function($event) {
+                var $$selectedVal = Array.prototype.filter
+                  .call($event.target.options, function(o) {
+                    return o.selected
+                  })
+                  .map(function(o) {
+                    var val = "_value" in o ? o._value : o.value
+                    return val
+                  })
+                _vm.selectedBedTotal = $event.target.multiple
+                  ? $$selectedVal
+                  : $$selectedVal[0]
+              }
+            }
           },
           [
-            _c("table", { attrs: { width: "100%" } }, [
-              _c("thead", [
-                _c(
+            _c("option", { attrs: { value: "1" } }, [_vm._v("Bed Capacity")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "2" } }, [_vm._v("Occupied Bed")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "3" } }, [_vm._v("Vacant Bed")]),
+            _vm._v(" "),
+            _c("option", { attrs: { value: "4" } }, [
+              _vm._v("Occupied Bed/Bed Capacity")
+            ])
+          ]
+        )
+      ]),
+      _vm._v(" "),
+      _c(
+        "div",
+        {
+          staticClass: "tableFixHead mb-2 overflow-auto",
+          staticStyle: { height: "490px" }
+        },
+        [
+          _c("table", { attrs: { width: "100%" } }, [
+            _c("thead", [
+              _c(
+                "tr",
+                {
+                  staticClass:
+                    "bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-600 "
+                },
+                [
+                  _c(
+                    "th",
+                    {
+                      staticClass: "text-white p-2 font-normal",
+                      attrs: { width: "200" }
+                    },
+                    [
+                      _vm._v(
+                        "\n                            Municipality\n                        "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("th", { staticClass: "text-white p-2 font-normal" }, [
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(_vm.text) +
+                        " ICU Beds\n                        "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("th", { staticClass: "text-white p-2 font-normal" }, [
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(_vm.text) +
+                        " Isolation Beds\n                        "
+                    )
+                  ]),
+                  _vm._v(" "),
+                  _c("th", { staticClass: "text-white p-2 font-normal" }, [
+                    _vm._v(
+                      "\n                            " +
+                        _vm._s(_vm.text) +
+                        " Ward Beds\n                        "
+                    )
+                  ])
+                ]
+              )
+            ]),
+            _vm._v(" "),
+            _c(
+              "tbody",
+              _vm._l(_vm.municipalitiesData, function(m) {
+                return _c(
                   "tr",
-                  {
-                    staticClass:
-                      "bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-600 "
-                  },
+                  { key: m.id, staticClass: "hover:bg-gray-100" },
                   [
+                    _c("td", { staticClass: "p-2 bg-opacity-80" }, [
+                      _vm._v(_vm._s(m.name))
+                    ]),
+                    _vm._v(" "),
                     _c(
-                      "th",
+                      "td",
                       {
-                        staticClass: "text-white p-2 font-normal",
-                        attrs: { width: "200" }
+                        staticClass: "p-2 bg-opacity-80",
+                        class: _vm.classObj(
+                          _vm.showSelectedBedTotal(m, "icu"),
+                          "yellow"
+                        ),
+                        attrs: { width: "150" }
                       },
                       [
                         _vm._v(
-                          "\n                            Municipality\n                        "
+                          "\n                            " +
+                            _vm._s(_vm.showSelectedBedTotal(m, "icu")) +
+                            "\n                        "
                         )
                       ]
                     ),
                     _vm._v(" "),
-                    _c("th", { staticClass: "text-white p-2 font-normal" }, [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(_vm.text) +
-                          " ICU Beds\n                        "
-                      )
-                    ]),
+                    _c(
+                      "td",
+                      {
+                        staticClass: "p-2 bg-opacity-80",
+                        class: _vm.classObj(
+                          _vm.showSelectedBedTotal(m, "isolation"),
+                          "blue"
+                        ),
+                        attrs: { width: "150" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(_vm.showSelectedBedTotal(m, "isolation")) +
+                            "\n                        "
+                        )
+                      ]
+                    ),
                     _vm._v(" "),
-                    _c("th", { staticClass: "text-white p-2 font-normal" }, [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(_vm.text) +
-                          " Isolation Beds\n                        "
-                      )
-                    ]),
-                    _vm._v(" "),
-                    _c("th", { staticClass: "text-white p-2 font-normal" }, [
-                      _vm._v(
-                        "\n                            " +
-                          _vm._s(_vm.text) +
-                          " Ward Beds\n                        "
-                      )
-                    ])
+                    _c(
+                      "td",
+                      {
+                        staticClass: "p-2 bg-opacity-80",
+                        class: _vm.classObj(
+                          _vm.showSelectedBedTotal(m, "ward"),
+                          "green"
+                        ),
+                        attrs: { width: "150" }
+                      },
+                      [
+                        _vm._v(
+                          "\n                            " +
+                            _vm._s(_vm.showSelectedBedTotal(m, "ward")) +
+                            "\n                        "
+                        )
+                      ]
+                    )
                   ]
                 )
-              ]),
-              _vm._v(" "),
-              _c(
-                "tbody",
-                _vm._l(_vm.municipalitiesData, function(m) {
-                  return _c(
-                    "tr",
-                    { key: m.id, staticClass: "hover:bg-gray-100" },
-                    [
-                      _c("td", { staticClass: "p-2 bg-opacity-80" }, [
-                        _vm._v(_vm._s(m.name))
-                      ]),
-                      _vm._v(" "),
-                      _c(
-                        "td",
-                        {
-                          staticClass: "p-2 bg-opacity-80",
-                          class: _vm.classObj(
-                            _vm.showSelectedBedTotal(m, "icu"),
-                            "yellow"
-                          ),
-                          attrs: { width: "150" }
-                        },
-                        [
-                          _vm._v(
-                            "\n                            " +
-                              _vm._s(_vm.showSelectedBedTotal(m, "icu")) +
-                              "\n                        "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "td",
-                        {
-                          staticClass: "p-2 bg-opacity-80",
-                          class: _vm.classObj(
-                            _vm.showSelectedBedTotal(m, "isolation"),
-                            "blue"
-                          ),
-                          attrs: { width: "150" }
-                        },
-                        [
-                          _vm._v(
-                            "\n                            " +
-                              _vm._s(_vm.showSelectedBedTotal(m, "isolation")) +
-                              "\n                        "
-                          )
-                        ]
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "td",
-                        {
-                          staticClass: "p-2 bg-opacity-80",
-                          class: _vm.classObj(
-                            _vm.showSelectedBedTotal(m, "ward"),
-                            "green"
-                          ),
-                          attrs: { width: "150" }
-                        },
-                        [
-                          _vm._v(
-                            "\n                            " +
-                              _vm._s(_vm.showSelectedBedTotal(m, "ward")) +
-                              "\n                        "
-                          )
-                        ]
-                      )
-                    ]
-                  )
-                }),
-                0
-              )
-            ]),
-            _vm._v(" "),
-            _vm.loaded && !_vm.municipalitiesData.length
-              ? _c("div", { staticClass: "text-center mt-5" }, [
-                  _vm._v("\n                No Record Found\n            ")
-                ])
-              : _vm._e(),
-            _vm._v(" "),
-            !_vm.loaded
-              ? _c("div", { staticClass: "text-center mt-5" }, [
-                  _vm._v("Loading...")
-                ])
-              : _vm._e()
-          ]
-        )
-      ]
-    )
+              }),
+              0
+            )
+          ]),
+          _vm._v(" "),
+          _vm.loaded && !_vm.municipalitiesData.length
+            ? _c("div", { staticClass: "text-center mt-5" }, [
+                _vm._v("\n                No Record Found\n            ")
+              ])
+            : _vm._e(),
+          _vm._v(" "),
+          !_vm.loaded
+            ? _c("div", { staticClass: "text-center mt-5" }, [
+                _vm._v("Loading...")
+              ])
+            : _vm._e()
+        ]
+      )
+    ])
   ])
 }
 var staticRenderFns = []

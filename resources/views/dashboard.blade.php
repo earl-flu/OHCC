@@ -100,8 +100,7 @@
     @if (Auth::user()->isSuperAdmin())
     <!-- Health Facility Table-->
     <health-facility-table :municipalities="{{$municipalities}}"></health-facility-table>
-
-
+    
     <municipality-table></municipality-table>
     @endif
 

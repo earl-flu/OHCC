@@ -1,5 +1,5 @@
 <template>
-    <div class="shadow-md border rounded-lg p-5 mb-10">
+    <div class="shadow-md border rounded-lg p-5 mb-10 overflow-auto">
         <!-- Filter Container -->
         <div class="flex flex-col md:flex-row mt-5 mb-2 text-gray-600">
             <datepicker
@@ -41,7 +41,7 @@
                 >Last update per day</label
             >
         </div>
-        <div>
+        <div style="min-width:600px;">
             <line-chart
                 :chart-data="datacollection"
                 :options="options"

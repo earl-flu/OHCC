@@ -4,6 +4,7 @@
             <span class="text-yellow-500 mr-1 font-thin">#</span>
             Hospitals & Health Facilities
         </h1>
+
         <div class=" shadow-md border rounded-lg p-5 mb-10">
             <!-- Filter Container-->
             <div class="grid grid-cols-4 gap-4 mb-5">
@@ -326,7 +327,7 @@ export default {
                 "bg-green-200": str.includes("Today")
             };
         }
-    },
+    }
 };
 </script>
 
