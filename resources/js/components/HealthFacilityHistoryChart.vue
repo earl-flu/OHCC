@@ -41,7 +41,7 @@
                 >Last update per day</label
             >
         </div>
-        <div style="min-width:600px;">
+        <div style="min-width:600pxgit ;">
             <line-chart
                 :chart-data="datacollection"
                 :options="options"
@@ -51,7 +51,7 @@
 </template>
 
 <script>
-import HistoryService from "../../js/services/HistoryService.js";
+import HistoryService from "../services/HistoryService.js";
 import Datepicker from "vuejs-datepicker";
 
 export default {

@@ -3792,10 +3792,10 @@ module.exports = {
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=script&lang=js&":
-/*!*******************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=script&lang=js& ***!
-  \*******************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js&":
+/*!*********************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js& ***!
+  \*********************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -3803,7 +3803,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _js_services_HistoryService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../../js/services/HistoryService.js */ "./resources/js/services/HistoryService.js");
+/* harmony import */ var _services_HistoryService_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ../services/HistoryService.js */ "./resources/js/services/HistoryService.js");
 /* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
 function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
 
@@ -3933,7 +3933,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       //bago ipasa dapat converted yung dateObj into yyyy/mm/dd
       var startDate = dateFrom.toISOString().split("T")[0];
       var endDate = dateTo.toISOString().split("T")[0];
-      _js_services_HistoryService_js__WEBPACK_IMPORTED_MODULE_0__.default.getHistories(startDate, endDate).then(function (res) {
+      _services_HistoryService_js__WEBPACK_IMPORTED_MODULE_0__.default.getHistories(startDate, endDate).then(function (res) {
         //set activities data
         _this.histories = res.data.data;
         _this.singleHistoryPerDay = _this.setSingleHistoryPerDay(_this.histories); //fill the data for chart
@@ -61640,10 +61640,10 @@ var reactiveProp = {
 
 /***/ }),
 
-/***/ "./resources/js/components/ActivityList.vue":
-/*!**************************************************!*\
-  !*** ./resources/js/components/ActivityList.vue ***!
-  \**************************************************/
+/***/ "./resources/js/components/HealthFacilityHistoryChart.vue":
+/*!****************************************************************!*\
+  !*** ./resources/js/components/HealthFacilityHistoryChart.vue ***!
+  \****************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -61651,8 +61651,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _ActivityList_vue_vue_type_template_id_f2f30490_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./ActivityList.vue?vue&type=template&id=f2f30490&scoped=true& */ "./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true&");
-/* harmony import */ var _ActivityList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./ActivityList.vue?vue&type=script&lang=js& */ "./resources/js/components/ActivityList.vue?vue&type=script&lang=js&");
+/* harmony import */ var _HealthFacilityHistoryChart_vue_vue_type_template_id_da8c3ed8_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true& */ "./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true&");
+/* harmony import */ var _HealthFacilityHistoryChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./HealthFacilityHistoryChart.vue?vue&type=script&lang=js& */ "./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
 
 
@@ -61662,19 +61662,19 @@ __webpack_require__.r(__webpack_exports__);
 /* normalize component */
 ;
 var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
-  _ActivityList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
-  _ActivityList_vue_vue_type_template_id_f2f30490_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
-  _ActivityList_vue_vue_type_template_id_f2f30490_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  _HealthFacilityHistoryChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _HealthFacilityHistoryChart_vue_vue_type_template_id_da8c3ed8_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _HealthFacilityHistoryChart_vue_vue_type_template_id_da8c3ed8_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
   false,
   null,
-  "f2f30490",
+  "da8c3ed8",
   null
   
 )
 
 /* hot reload */
 if (false) { var api; }
-component.options.__file = "resources/js/components/ActivityList.vue"
+component.options.__file = "resources/js/components/HealthFacilityHistoryChart.vue"
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
 
 /***/ }),
@@ -61799,10 +61799,10 @@ component.options.__file = "resources/js/components/MunicipalityTable.vue"
 
 /***/ }),
 
-/***/ "./resources/js/components/ActivityList.vue?vue&type=script&lang=js&":
-/*!***************************************************************************!*\
-  !*** ./resources/js/components/ActivityList.vue?vue&type=script&lang=js& ***!
-  \***************************************************************************/
+/***/ "./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js&":
+/*!*****************************************************************************************!*\
+  !*** ./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js& ***!
+  \*****************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -61810,8 +61810,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
-/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActivityList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ActivityList.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=script&lang=js&");
- /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_ActivityList_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityHistoryChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./HealthFacilityHistoryChart.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityHistoryChart_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
 
 /***/ }),
 
@@ -61863,19 +61863,19 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true&":
-/*!*********************************************************************************************!*\
-  !*** ./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true& ***!
-  \*********************************************************************************************/
+/***/ "./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true&":
+/*!***********************************************************************************************************!*\
+  !*** ./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true& ***!
+  \***********************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
-/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActivityList_vue_vue_type_template_id_f2f30490_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
-/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActivityList_vue_vue_type_template_id_f2f30490_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityHistoryChart_vue_vue_type_template_id_da8c3ed8_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityHistoryChart_vue_vue_type_template_id_da8c3ed8_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
-/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_ActivityList_vue_vue_type_template_id_f2f30490_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./ActivityList.vue?vue&type=template&id=f2f30490&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true&");
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_HealthFacilityHistoryChart_vue_vue_type_template_id_da8c3ed8_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true&");
 
 
 /***/ }),
@@ -61948,10 +61948,10 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
-/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true&":
-/*!************************************************************************************************************************************************************************************************************************************!*\
-  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/ActivityList.vue?vue&type=template&id=f2f30490&scoped=true& ***!
-  \************************************************************************************************************************************************************************************************************************************/
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true&":
+/*!**************************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true& ***!
+  \**************************************************************************************************************************************************************************************************************************************************/
 /***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
 
 "use strict";
@@ -62077,7 +62077,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticStyle: { "min-width": "600px" } },
+        { staticStyle: { "min-width": "600pxgit" } },
         [
           _c("line-chart", {
             attrs: { "chart-data": _vm.datacollection, options: _vm.options }
@@ -77677,7 +77677,7 @@ __vue_render__$4._withStripped = true;
 /***/ ((module, __unused_webpack_exports, __webpack_require__) => {
 
 var map = {
-	"./components/ActivityList.vue": "./resources/js/components/ActivityList.vue",
+	"./components/HealthFacilityHistoryChart.vue": "./resources/js/components/HealthFacilityHistoryChart.vue",
 	"./components/HealthFacilityTable.vue": "./resources/js/components/HealthFacilityTable.vue",
 	"./components/LineChart.vue": "./resources/js/components/LineChart.vue",
 	"./components/MunicipalityTable.vue": "./resources/js/components/MunicipalityTable.vue"

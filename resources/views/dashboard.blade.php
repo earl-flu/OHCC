@@ -93,7 +93,7 @@
     </div>
     {{--End Card For HF admin  --}}
     <!--vue component -->
-    <activity-list></activity-list>
+    <health-facility-history-chart></health-facility-history-chart>
     @endif
 
     {{-- For Super Admin --}}
