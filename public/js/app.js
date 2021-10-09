@@ -4285,6 +4285,88 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["municipalities"],
@@ -4331,6 +4413,7 @@ __webpack_require__.r(__webpack_exports__);
       this.setFilteredDataByName();
       this.setFilteredDataByType();
       this.setFilteredDataByMunicipality();
+      console.log(this.filteredData);
     },
     setDefaultFilteredData: function setDefaultFilteredData() {
       this.filteredData = this.healthfacilities;
@@ -62077,7 +62160,7 @@ var render = function() {
       _vm._v(" "),
       _c(
         "div",
-        { staticStyle: { "min-width": "600pxgit" } },
+        { staticStyle: { "min-width": "600px" } },
         [
           _c("line-chart", {
             attrs: { "chart-data": _vm.datacollection, options: _vm.options }
@@ -62113,6 +62196,8 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "overflow-auto" }, [
     _vm._m(0),
+    _vm._v(" "),
+    _vm._m(1),
     _vm._v(" "),
     _c("div", { staticClass: " shadow-md border rounded-lg p-5 mb-10" }, [
       _c("div", { staticClass: "grid grid-cols-4 gap-4 mb-5" }, [
@@ -62264,7 +62349,7 @@ var render = function() {
         { staticClass: "overflow-auto tableFixHead mb-10 table-min-height" },
         [
           _c("table", { attrs: { width: "100%" } }, [
-            _vm._m(1),
+            _vm._m(2),
             _vm._v(" "),
             _c(
               "tbody",
@@ -62414,6 +62499,229 @@ var staticRenderFns = [
           _vm._v("#")
         ]),
         _vm._v("\n        Hospitals & Health Facilities\n    ")
+      ]
+    )
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c(
+      "div",
+      { staticClass: "grid gap-6 mb-10 md:grid-cols-2 xl:grid-cols-3 mt-2" },
+      [
+        _c(
+          "div",
+          {
+            staticClass:
+              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+          },
+          [
+            _c("div", { staticClass: "text-center text-xl mb-1" }, [
+              _vm._v("Ward Beds")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+              },
+              [
+                _c("div", { staticClass: "flex-1 flex flex-col" }, [
+                  _c(
+                    "div",
+                    { staticClass: "text-sm text-center p-2 bg-green-200" },
+                    [_vm._v("\n                    Occupied\n                ")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "flex-1 flex" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex flex-1 items-center justify-center border-r border-gray-200"
+                      },
+                      [
+                        _c("div", { staticClass: "text-xl text-gray-600" }, [
+                          _vm._v(
+                            "\n                            1/10\n                        "
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "flex-1 flex flex-col text-gray-600" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-sm text-center p-2 bg-green-300 font-semibold"
+                      },
+                      [_vm._v("Vacant")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center h-full border-l border-gray-200 text-5xl"
+                      },
+                      [_vm._v("\n                   9\n                ")]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+          },
+          [
+            _c("div", { staticClass: "text-center text-xl mb-1" }, [
+              _vm._v("Isolation Beds")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+              },
+              [
+                _c("div", { staticClass: "flex-1 flex flex-col" }, [
+                  _c(
+                    "div",
+                    { staticClass: "text-sm text-center p-2 bg-blue-200" },
+                    [_vm._v("\n                    Occupied\n                ")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "flex-1 flex" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex flex-1 items-center justify-center border-r border-gray-200"
+                      },
+                      [
+                        _c("div", { staticClass: "text-xl text-gray-600" }, [
+                          _vm._v(
+                            "\n                          5/11\n                        "
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "flex-1 flex flex-col text-gray-600" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-sm text-center p-2 bg-blue-300 font-semibold"
+                      },
+                      [_vm._v("Vacant")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center h-full  border-l border-gray-200 text-5xl"
+                      },
+                      [_vm._v("\n                  6\n                ")]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+          },
+          [
+            _c("div", { staticClass: "text-center text-xl mb-1" }, [
+              _vm._v("ICU Beds")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+              },
+              [
+                _c("div", { staticClass: "flex-1 flex flex-col" }, [
+                  _c(
+                    "div",
+                    { staticClass: "text-sm text-center p-2 bg-yellow-200" },
+                    [_vm._v("\n                    Occupied\n                ")]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "flex-1 flex" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex flex-1 items-center justify-center border-r border-gray-200"
+                      },
+                      [
+                        _c("div", { staticClass: "text-xl text-gray-600" }, [
+                          _vm._v(
+                            "\n                           1/4\n                        "
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "flex-1 flex flex-col text-gray-600" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-sm text-center p-2 bg-yellow-300 font-semibold"
+                      },
+                      [_vm._v("Vacant")]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center h-full border-l border-gray-200 text-5xl"
+                      },
+                      [_vm._v("\n                    3\n                ")]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        )
       ]
     )
   },

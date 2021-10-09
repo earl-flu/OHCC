@@ -4,7 +4,89 @@
             <span class="text-yellow-500 mr-1 font-thin">#</span>
             Hospitals & Health Facilities
         </h1>
+        
+        <div class="grid gap-6 mb-10 md:grid-cols-2 xl:grid-cols-3 mt-2">
+        <!--Card-->
+        <div
+            class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 ">
+            <div class="text-center text-xl mb-1">Ward Beds</div>
+            <div class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden">
+                <div class="flex-1 flex flex-col">
+                    <div class="text-sm text-center p-2 bg-green-200">
+                        Occupied
+                    </div>
+                    <div class="flex-1 flex">
+                        <div class="flex flex-1 items-center justify-center border-r border-gray-200">
+                            <div class="text-xl text-gray-600">
+                                1/10
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col text-gray-600">
+                    <div class="text-sm text-center p-2 bg-green-300 font-semibold">Vacant</div>
+                    <div class="flex items-center justify-center h-full border-l border-gray-200 text-5xl">
+                       9
+                    </div>
 
+                </div>
+            </div>
+        </div>
+
+        <!--Card-->
+        <div
+            class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 ">
+            <div class="text-center text-xl mb-1">Isolation Beds</div>
+            <div class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden">
+                <div class="flex-1 flex flex-col">
+                    <div class="text-sm text-center p-2 bg-blue-200">
+                        Occupied
+                    </div>
+                    <div class="flex-1 flex">
+                        <div class="flex flex-1 items-center justify-center border-r border-gray-200">
+                            <div class="text-xl text-gray-600">
+                              5/11
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col text-gray-600">
+                    <div class="text-sm text-center p-2 bg-blue-300 font-semibold">Vacant</div>
+                    <div class="flex items-center justify-center h-full  border-l border-gray-200 text-5xl">
+                      6
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <!--Card-->
+        <div
+            class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 ">
+            <div class="text-center text-xl mb-1">ICU Beds</div>
+            <div class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden">
+                <div class="flex-1 flex flex-col">
+                    <div class="text-sm text-center p-2 bg-yellow-200">
+                        Occupied
+                    </div>
+                    <div class="flex-1 flex">
+                        <div class="flex flex-1 items-center justify-center border-r border-gray-200">
+                            <div class="text-xl text-gray-600">
+                               1/4
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="flex-1 flex flex-col text-gray-600">
+                    <div class="text-sm text-center p-2 bg-yellow-300 font-semibold">Vacant</div>
+                    <div class="flex items-center justify-center h-full border-l border-gray-200 text-5xl">
+                        3
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
         <div class=" shadow-md border rounded-lg p-5 mb-10">
             <!-- Filter Container-->
             <div class="grid grid-cols-4 gap-4 mb-5">
@@ -235,6 +317,7 @@ export default {
             this.setFilteredDataByName();
             this.setFilteredDataByType();
             this.setFilteredDataByMunicipality();
+            console.log(this.filteredData)
         },
 
         setDefaultFilteredData() {

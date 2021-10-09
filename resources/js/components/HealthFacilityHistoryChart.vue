@@ -41,7 +41,7 @@
                 >Last update per day</label
             >
         </div>
-        <div style="min-width:600pxgit ;">
+        <div style="min-width:600px;">
             <line-chart
                 :chart-data="datacollection"
                 :options="options"
