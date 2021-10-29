@@ -8,9 +8,6 @@
     <!--STYLES-->
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap"
         rel="stylesheet" />
-    <link rel="stylesheet" href="//cdn.datatables.net/1.10.25/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="//cdn.datatables.net/fixedcolumns/3.3.3/css/fixedColumns.dataTables.min.css">
-    {{-- <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.2.9/css/responsive.dataTables.min.css"> --}}
     <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.css"
         integrity="sha512-8D+M+7Y6jVsEa7RD6Kv/Z7EImSpNpQllgaEIQAtqHcI0H6F4iZknRj0Nx1DCdB+TwBaS+702BGWYC0Ze2hpExQ=="
@@ -27,11 +24,6 @@
         th,
         td {
             white-space: nowrap;
-        }
-
-        div.dataTables_wrapper {
-            width: 100%;
-            margin: 0 auto;
         }
 
         .edit-icon-container:hover .edit-icon {
@@ -68,15 +60,9 @@
     <script src="{{ asset('js/app.js') }}" defer></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script>
     @stack('chart_scripts')
-    <script src="//cdn.datatables.net/1.10.25/js/jquery.dataTables.min.js"></script>
-    {{-- <script src="https://cdn.datatables.net/responsive/2.2.9/js/dataTables.responsive.min.js"></script> --}}
-    <script src="//cdn.datatables.net/fixedcolumns/3.3.3/js/dataTables.fixedColumns.min.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     {{-- <script src="https://f001.backblazeb2.com/file/buonzz-assets/jquery.ph-locations-v1.0.0.js"></script> --}}
     <script src="{{ asset('js/jquery.ph-locations-v1.0.0.js') }}"></script>
-    {{-- <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.full.min.js"
-        integrity="sha512-RtZU3AyMVArmHLiW0suEZ9McadTdegwbgtiQl5Qqo9kunkVg1ofwueXD8/8wv3Af8jkME3DDe3yLfR8HSJfT2g=="
-        crossorigin="anonymous" referrerpolicy="no-referrer"></script> --}}
     <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-toast-plugin/1.3.2/jquery.toast.min.js"
         integrity="sha512-zlWWyZq71UMApAjih4WkaRpikgY9Bz1oXIW5G0fED4vk14JjGlQ1UmkGM392jEULP8jbNMiwLWdM8Z87Hu88Fw=="
@@ -93,10 +79,9 @@
 
     <div class="flex h-screen bg-gray-50 dark:bg-gray-900" :class="{ 'overflow-hidden': isSideMenuOpen }">
         <!-- Desktop sidebar -->
-        <aside class="z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
+        <aside class="shadow z-20 hidden w-64 overflow-y-auto bg-white dark:bg-gray-800 md:block flex-shrink-0">
             <div class="py-4 text-gray-500 dark:text-gray-400 relative h-full relative">
                 <a class="pl-6 text-lg font-bold text-primary-dark" href="#">
-                    {{-- text-gray-800 dark:text-gray-200  --}}
                     OHCC- Catanduanes
                 </a>
                 <p class="pl-6 text-xs">One Health Command Center</p>
@@ -118,6 +103,22 @@
                             <span class="ml-4">Dashboard</span>
                         </a>
                     </li>
+                    @if (Auth::user()->isSuperAdmin())
+                    <li class="relative px-6 py-3">
+                        @if (request()->routeIs('update-by-date'))
+                        <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                            aria-hidden="true"></span>
+                        @endif
+
+                        <a class="inline-flex items-center w-full text-sm font-semibold {{request()->routeIs('update-by-date') ? 'text-gray-800 dark:text-gray-100' : ''}} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                            href="{{route('update-by-date')}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                            <span class="ml-4">Search Update</span>
+                        </a>
+                    </li>
+                    @endif
 
                     @if (!Auth::user()->isSuperAdmin() && Auth::user()->healthFacility)
                     <li class="relative px-6 py-3">
@@ -133,7 +134,7 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                             </svg>
-                            <span class="ml-4">Update Record</span>
+                            <span class="ml-4">Update Beds</span>
                         </a>
                     </li>
                     @endif
@@ -142,9 +143,8 @@
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg h-12"
                             aria-hidden="true"></span>
                         @endif
-                        <button
-                            class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {{request()->routeIs('patients.*') ? 'text-gray-800 dark:text-gray-200' : '' }}  hover:text-gray-800 dark:hover:text-gray-200"
-                            @click="togglePatientsMenu" aria-haspopup="true">
+                        <button class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {{request()->routeIs('patients.*') ? 'text-gray-800 dark:text-gray-200' : '' }}
+                    hover:text-gray-800 dark:hover:text-gray-200" @click="togglePatientsMenu" aria-haspopup="true">
                             <span class="inline-flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -189,7 +189,8 @@
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
                             aria-hidden="true"></span>
                         @endif
-                        <a class="inline-flex items-center w-full text-sm font-semibold {{request()->routeIs('health-facilities.*') ? 'text-gray-800 dark:text-gray-100' : ''}} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                        <a class="inline-flex items-center w-full text-sm font-semibold {{request()->routeIs('health-facilities.*') ? 'text-gray-800 dark:text-gray-100' : ''}}
+                    transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                             href="{{route('health-facilities.index')}}">
 
                             <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
@@ -219,9 +220,10 @@
             x-transition:leave-end="opacity-0 transform -translate-x-20" @click.away="closeSideMenu"
             @keydown.escape="closeSideMenu">
             <div class="py-4 text-gray-500 dark:text-gray-400 relative h-full">
-                <a class="ml-6 text-lg font-bold text-gray-800 dark:text-gray-200" href="#">
-                    Windmill
+                <a class="pl-6 text-lg font-bold text-primary-dark" href="#">
+                    OHCC- Catanduanes
                 </a>
+                <p class="pl-6 text-xs">One Health Command Center</p>
                 <ul class="mt-6">
                     <li class="relative px-6 py-3">
                         @if (request()->routeIs('dashboard'))
@@ -240,6 +242,22 @@
                             <span class="ml-4">Dashboard</span>
                         </a>
                     </li>
+                    @if (Auth::user()->isSuperAdmin())
+                    <li class="relative px-6 py-3">
+                        @if (request()->routeIs('update-by-date'))
+                        <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg"
+                            aria-hidden="true"></span>
+                        @endif
+
+                        <a class="inline-flex items-center w-full text-sm font-semibold {{request()->routeIs('update-by-date') ? 'text-gray-800 dark:text-gray-100' : ''}} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                            href="{{route('update-by-date')}}">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+                              </svg>
+                            <span class="ml-4">Search Update</span>
+                        </a>
+                    </li>
+                    @endif
 
                     @if (!Auth::user()->isSuperAdmin() && Auth::user()->healthFacility)
                     <li class="relative px-6 py-3">
@@ -255,19 +273,19 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
                                     d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
                             </svg>
-                            <span class="ml-4">Update Record</span>
+                            <span class="ml-4">Update Beds</span>
                         </a>
                     </li>
                     @endif
+
 
                     {{-- <li class="relative px-6 py-3">
                         @if (request()->routeIs('patients.*'))
                         <span class="absolute inset-y-0 left-0 w-1 bg-purple-600 rounded-tr-lg rounded-br-lg h-12"
                             aria-hidden="true"></span>
                         @endif
-                        <button
-                            class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {{request()->routeIs('patients.*') ? 'text-gray-800 dark:text-gray-200' : '' }}  hover:text-gray-800 dark:hover:text-gray-200"
-                            @click="togglePatientsMenu" aria-haspopup="true">
+                        <button class="inline-flex items-center justify-between w-full text-sm font-semibold transition-colors duration-150 {{request()->routeIs('patients.*') ? 'text-gray-800 dark:text-gray-200' : '' }}
+                    hover:text-gray-800 dark:hover:text-gray-200" @click="togglePatientsMenu" aria-haspopup="true">
                             <span class="inline-flex items-center">
                                 <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24"
                                     stroke="currentColor">
@@ -312,7 +330,8 @@
                             aria-hidden="true"></span>
                         @endif
 
-                        <a class="inline-flex items-center w-full text-sm font-semibold {{request()->routeIs('health-facilities.*') ? 'text-gray-800 dark:text-gray-100' : ''}} transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
+                        <a class="inline-flex items-center w-full text-sm font-semibold {{request()->routeIs('health-facilities.*') ? 'text-gray-800 dark:text-gray-100' : ''}}
+                    transition-colors duration-150 hover:text-gray-800 dark:hover:text-gray-200"
                             href="{{route('health-facilities.index')}}">
                             <svg class="w-5 h-5" aria-hidden="true" fill="none" stroke-linecap="round"
                                 stroke-linejoin="round" stroke-width="2" viewBox="0 0 24 24" stroke="currentColor">
@@ -376,6 +395,7 @@
                             </button>
                         </li> --}}
                         <!-- Notifications menu -->
+                        @if (Auth::user()->isSuperAdmin())
                         <li class="relative">
                             <button
                                 class="relative align-middle rounded-md focus:outline-none focus:shadow-outline-purple"
@@ -387,8 +407,11 @@
                                     </path>
                                 </svg>
                                 <!-- Notification badge -->
+                                @if (!Auth::user()->unreadNotifications->isEmpty())
                                 <span aria-hidden="true"
                                     class="absolute top-0 right-0 inline-block w-3 h-3 transform translate-x-1 -translate-y-1 bg-red-600 border-2 border-white rounded-full dark:border-gray-800"></span>
+                                @endif
+
                             </button>
                             <template x-if="isNotificationsMenuOpen">
                                 <ul x-transition:leave="transition ease-in duration-150"
@@ -397,33 +420,20 @@
                                     class="absolute right-0 w-56 p-2 mt-2 space-y-2 text-gray-600 bg-white border border-gray-100 rounded-md shadow-md dark:text-gray-300 dark:border-gray-700 dark:bg-gray-700">
                                     <li class="flex">
                                         <a class="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                            href="#">
-                                            <span>Messages</span>
+                                            href="{{route('notifications')}}">
+                                            <span>Updates</span>
+                                            @if (!Auth::user()->unreadNotifications->isEmpty())
                                             <span
                                                 class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-600 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
-                                                13
+                                                {{Auth::user()->unreadNotifications->count()}}
                                             </span>
-                                        </a>
-                                    </li>
-                                    <li class="flex">
-                                        <a class="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                            href="#">
-                                            <span>News</span>
-                                            <span
-                                                class="inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-red-600 bg-red-100 rounded-full dark:text-red-100 dark:bg-red-600">
-                                                2
-                                            </span>
-                                        </a>
-                                    </li>
-                                    <li class="flex">
-                                        <a class="inline-flex items-center justify-between w-full px-2 py-1 text-sm font-semibold transition-colors duration-150 rounded-md hover:bg-gray-100 hover:text-gray-800 dark:hover:bg-gray-800 dark:hover:text-gray-200"
-                                            href="#">
-                                            <span>Alerts</span>
+                                            @endif
                                         </a>
                                     </li>
                                 </ul>
                             </template>
                         </li>
+                        @endif
                         <!-- Profile menu -->
                         <li class="relative">
                             <button class="align-middle rounded-full focus:shadow-outline-purple focus:outline-none"

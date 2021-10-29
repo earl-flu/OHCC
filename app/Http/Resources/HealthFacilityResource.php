@@ -24,6 +24,7 @@ class HealthFacilityResource extends JsonResource
             "isolation_capacity" => $this->isolation_capacity,
             "icu_capacity" => $this->icu_capacity,
             "max_ventilator" => $this->max_ventilator,
+            "active_ventilator" => $this->active_ventilator,
             "occupied_ward" => $this->occupied_ward,
             "occupied_isolation" => $this->occupied_isolation,
             "occupied_icu" => $this->occupied_icu,

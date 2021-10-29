@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Models\HealthFacility;
 use Illuminate\Http\Resources\Json\JsonResource;
 
-class HistoryResource extends JsonResource
+class SuperAdminHistoryResource extends JsonResource
 {
     /**
      * Transform the resource into an array.
@@ -13,14 +13,15 @@ class HistoryResource extends JsonResource
      * @param  \Illuminate\Http\Request  $request
      * @return array
      */
-public function toArray($request)
+    public function toArray($request)
     {
-        // return parent::toArray($request);
-   
+        $health_facility_name = HealthFacility::find($this->health_facility_id)->name;
+
         return [
             "id" => $this->id,
             "user_id" =>  $this->user_id,
             "health_facility_id" => $this->health_facility_id,
+            "health_facility_name" => $health_facility_name,
             "municipality_id" =>  $this->municipality_id,
             "icu_capacity" =>  $this->icu_capacity,
             "isolation_capacity" =>  $this->isolation_capacity,
@@ -34,5 +35,6 @@ public function toArray($request)
             "created_at" => $this->created_at->format('j-M-Y H:i:s'),
             "updated_at" => $this->updated_at
         ];
+        // return parent::toArray($request);
     }
 }

@@ -42,6 +42,7 @@
         <span class="text-yellow-500 mr-1 font-thin">#</span>
         Update Occupied Beds
     </h2>
+    <p class="text-xs text-gray-600 mb-1">Dedicated beds for Suspect, Probable, and Confirmed COVID-19 patients</p>
     <div class="grid grid-cols-8">
         <div class="col-span-8 p-5 mb-8 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800">
             <form action="{{route('health-facilities.update', $health_facility)}}" method="POST" autocomplete="off">
@@ -85,7 +86,7 @@
                         </label>
                     </div>
 
-                    <div class="col-span-6 order-4 md:order-2 md:col-span-3">
+                    <div class="col-span-6 order-5 md:order-2 md:col-span-3">
                         <label class="block text-sm">
                             <span class="text-gray-700 dark:text-gray-400">Occupied Ward</span>
                             <input class="border border-gray-200 rounded block w-full
@@ -107,7 +108,7 @@
                         </label>
                     </div>
 
-                    <div class="col-span-6 order-5 md:order-4 md:col-span-3">
+                    <div class="col-span-6 order-6 md:order-4 md:col-span-3">
                         <label class="block text-sm">
                             <span class="text-gray-700 dark:text-gray-400">Occupied Isolation</span>
                             <input
@@ -135,6 +136,25 @@
                                 name="occupied_icu" value="{{old('occupied_icu') ?: $health_facility->occupied_icu}}" />
                         </label>
                     </div>
+                    {{-- #################### --}}
+                    <div class="col-span-6 order-4 md:order-7 md:col-span-3">
+                        <label class="block text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">Max Ventilator</span>
+                            <input disabled
+                                class="border border-gray-200 rounded block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700
+                                focus:border-purple-400 focus:outline-none focus:shadow-outline-purple text-gray-400 dark:text-gray-500 dark:focus:shadow-outline-gray form-input"
+                                name="max_ventilator" value="{{old('max_ventilator') ?: $health_facility->max_ventilator}}" />
+                        </label>
+                    </div>
+
+                    <div class="col-span-6 order-8 md:order-8 md:col-span-3">
+                        <label class="block text-sm">
+                            <span class="text-gray-700 dark:text-gray-400">Ventilator in use</span>
+                            <input
+                                class="border border-gray-200 rounded block w-full mt-1 text-sm dark:border-gray-600 dark:bg-gray-700 focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:text-gray-300 dark:focus:shadow-outline-gray form-input"
+                                name="active_ventilator" value="{{old('active_ventilator') ?: $health_facility->active_ventilator}}" />
+                        </label>
+                    </div>
 
                     <button class="order-last w-full col-span-6 text-sm focus:outline-none border border-transparent py-2 px-3
                         rounded-lg shadow-sm text-center text-white bg-blue-500 hover:bg-blue-600 font-medium">
@@ -154,8 +174,9 @@
                     <th class="py-2 px-2 font-normal" width="100">Ward</th>
                     <th class="py-2 px-2 font-normal" width="100">Isolation</th>
                     <th class="py-2 px-2 font-normal" width="100">ICU</th>
+                    <th class="py-2 px-2 font-normal" width="100">Active Ventilator</th>
                     <th class="py-2 px-2 font-normal">Admin</th>
-                    <th></th>
+             
                 </tr>
             </thead>
             <tbody class="text-xs text-gray-500">
@@ -174,6 +195,9 @@
                         {{$history->occupied_icu}}
                     </td>
                     <td class="px-3 py-2">
+                        {{$history->active_ventilator}}
+                    </td>
+                    <td class="px-3 py-2">
                         {{$history->user->first_name}}
                         @if ($loop->first)
                         <span class="text-xs text-green-500 testt"> (Latest Update)</span>
@@ -185,22 +209,22 @@
                 <tr class="border hover:bg-gray-100">
                     <td class="px-3 py-2">
                         {{$activityLog->created_at}}
-                </td>
-                <td class="px-3 py-2">
-                    {{$activityLog->changes['attributes']['occupied_ward']}}
-                </td>
-                <td class="px-3 py-2">
-                    {{$activityLog->changes['attributes']['occupied_isolation']}}
-                </td>
-                <td class="px-3 py-2">
-                    {{$activityLog->changes['attributes']['occupied_icu']}}
-                </td>
-                <td class="px-3 py-2">
-                    {{$activityLog->causer->first_name}}
-                    @if ($loop->first)
-                    <span class="text-xs text-green-500 testt"> (Latest Update)</span>
-                    @endif
-                </td>
+                    </td>
+                    <td class="px-3 py-2">
+                        {{$activityLog->changes['attributes']['occupied_ward']}}
+                    </td>
+                    <td class="px-3 py-2">
+                        {{$activityLog->changes['attributes']['occupied_isolation']}}
+                    </td>
+                    <td class="px-3 py-2">
+                        {{$activityLog->changes['attributes']['occupied_icu']}}
+                    </td>
+                    <td class="px-3 py-2">
+                        {{$activityLog->causer->first_name}}
+                        @if ($loop->first)
+                        <span class="text-xs text-green-500 testt"> (Latest Update)</span>
+                        @endif
+                    </td>
                 </tr>
                 @endforeach --}}
             </tbody>

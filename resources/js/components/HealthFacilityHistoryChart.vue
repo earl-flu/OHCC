@@ -64,7 +64,7 @@ export default {
             dateTo: new Date(),
             checked: false,
             histories: [],
-            singleActivityPerDay: [],
+            singleHistoryPerDay: [],
             datacollection: {},
             //IDEA -kung ga update pag gabago ang dataset - edi ihiling yung docu ni chart vuejs
             // at itry utro yung code duman

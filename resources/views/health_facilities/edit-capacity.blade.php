@@ -1,11 +1,12 @@
 <x-app-layout>
     <h1 class="my-6 text-4xl font-semibold text-gray-700 dark:text-gray-200">
-        Health Facility Settings
+        {{$health_facility->name}}
     </h1>
     <h2 class="text-xl mb-2 font-semibold text-gray-700 text-opacity-95">
         <span class="text-yellow-500 mr-1 font-thin">#</span>
         Update Capacity
     </h2>
+    <p class="text-xs text-gray-600 mb-1">Dedicated beds for Suspect, Probable, and Confirmed COVID-19 patients</p>
     <div class="p-5 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800">
         @if ($errors->any())
         <!-- Jquery Toast for Error-->
@@ -38,7 +39,7 @@
         </script>
         @endpush
         @endif
-        <form method="POST" action="{{ route('edit.capacity', $health_facility) }}">
+        <form method="POST" action="{{ route('edit.capacity', $health_facility) }}" autocomplete="off">
             @csrf
             @method('PUT')
             <div class=" grid grid-cols-6 gap-6">

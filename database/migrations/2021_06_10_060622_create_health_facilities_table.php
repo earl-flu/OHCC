@@ -24,6 +24,9 @@ class CreateHealthFacilitiesTable extends Migration
             $table->smallInteger('isolation_capacity')->unsigned()->default(0);
             $table->smallInteger('icu_capacity')->unsigned()->default(0);
             $table->smallInteger('max_ventilator')->unsigned()->default(0);
+            $table->smallInteger('active_ventilator')
+                ->unsigned()
+                ->default(0);
             $table->smallInteger('occupied_ward')->unsigned()->default(0);
             $table->smallInteger('occupied_isolation')->unsigned()->default(0);
             $table->smallInteger('occupied_icu')->unsigned()->default(0);

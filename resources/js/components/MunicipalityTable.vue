@@ -25,17 +25,30 @@
                         <tr
                             class="bg-gradient-to-r from-indigo-400 via-blue-500 to-purple-600 "
                         >
-                            <th class="text-white p-2 font-normal" width="200">
+                            <th
+                                @click="sortCol('name')"
+                                class="text-white p-2 font-normal cursor-pointer"
+                                width="200"
+                            >
                                 Municipality
                             </th>
-                            <th class="text-white p-2 font-normal">
+                            <th
+                                @click="sortCol('total_icu_capacity')"
+                                class="text-white p-2 font-normal cursor-pointer"
+                            >
                                 {{ text }} ICU Beds
                             </th>
-                            <th class="text-white p-2 font-normal">
-                                {{ text }} Isolation Beds
-                            </th>
-                            <th class="text-white p-2 font-normal">
+                            <th
+                                @click="sortCol('total_ward_capacity')"
+                                class="text-white p-2 font-normal cursor-pointer"
+                            >
                                 {{ text }} Ward Beds
+                            </th>
+                            <th
+                                @click="sortCol('total_isolation_capacity')"
+                                class="text-white p-2 font-normal cursor-pointer"
+                            >
+                                {{ text }} Isolation Beds
                             </th>
                         </tr>
                     </thead>
@@ -63,24 +76,24 @@
                                 class="p-2 bg-opacity-80"
                                 :class="
                                     classObj(
-                                        showSelectedBedTotal(m, 'isolation'),
-                                        'blue'
-                                    )
-                                "
-                            >
-                                {{ showSelectedBedTotal(m, "isolation") }}
-                            </td>
-                            <td
-                                width="150"
-                                class="p-2 bg-opacity-80"
-                                :class="
-                                    classObj(
                                         showSelectedBedTotal(m, 'ward'),
                                         'green'
                                     )
                                 "
                             >
                                 {{ showSelectedBedTotal(m, "ward") }}
+                            </td>
+                            <td
+                                width="150"
+                                class="p-2 bg-opacity-80"
+                                :class="
+                                    classObj(
+                                        showSelectedBedTotal(m, 'isolation'),
+                                        'blue'
+                                    )
+                                "
+                            >
+                                {{ showSelectedBedTotal(m, "isolation") }}
                             </td>
                         </tr>
                     </tbody>
@@ -105,7 +118,9 @@ export default {
         return {
             loaded: false,
             selectedBedTotal: 1, //e.g. Bed Capacity, Occupied Bed
-            municipalitiesData: []
+            municipalitiesData: [],
+            currentSort: "name",
+            currentSortDir: "asc"
         };
     },
     created() {
@@ -120,6 +135,29 @@ export default {
             });
     },
     methods: {
+        sortCol(name) {
+            this.setCurrentSortDir(name);
+            this.sortMunicipalitiesData();
+        },
+        setCurrentSortDir(n) {
+            //if s == current sort, reverse
+            if (n === this.currentSort) {
+                this.currentSortDir =
+                    this.currentSortDir === "asc" ? "desc" : "asc";
+            }
+            this.currentSort = n;
+        },
+        sortMunicipalitiesData() {
+            this.municipalitiesData = this.municipalitiesData.sort((a, b) => {
+                let modifier = 1;
+                if (this.currentSortDir === "desc") modifier = -1;
+                if (a[this.currentSort] < b[this.currentSort])
+                    return -1 * modifier;
+                if (a[this.currentSort] > b[this.currentSort])
+                    return 1 * modifier;
+                return 0;
+            });
+        },
         classObj(val, color) {
             let isOccupiedOverCapacity = String(val).includes("/"); //Occupied Bed/Bed Capacity e.g. 1/3
 
@@ -134,7 +172,7 @@ export default {
                 [`bg-${color}-100`]: val >= 1
             };
         },
-
+        // what if we created this using map - additional col to municipality data
         showSelectedBedTotal(mun, bedType) {
             const selected = this.selectedBedTotal;
             return selected == 1
@@ -142,8 +180,7 @@ export default {
                 : selected == 2
                 ? mun[`total_${bedType}_occupied`]
                 : selected == 3
-                ? mun[`total_${bedType}_capacity`] -
-                  mun[`total_${bedType}_occupied`]
+                ? mun[`total_${bedType}_vacant`]
                 : selected == 4
                 ? mun[`total_${bedType}_occupied`] +
                   "/" +

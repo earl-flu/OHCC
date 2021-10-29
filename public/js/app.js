@@ -3895,7 +3895,7 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       dateTo: new Date(),
       checked: false,
       histories: [],
-      singleActivityPerDay: [],
+      singleHistoryPerDay: [],
       datacollection: {},
       //IDEA -kung ga update pag gabago ang dataset - edi ihiling yung docu ni chart vuejs
       // at itry utro yung code duman
@@ -4367,6 +4367,38 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["municipalities"],
@@ -4377,7 +4409,9 @@ __webpack_require__.r(__webpack_exports__);
       selectedMunicipality: "All",
       loaded: false,
       healthfacilities: [],
-      filteredData: []
+      filteredData: [],
+      currentSort: "name",
+      currentSortDir: "asc"
     };
   },
   created: function created() {
@@ -4394,17 +4428,66 @@ __webpack_require__.r(__webpack_exports__);
       console.log("There was an error:", err);
     });
   },
+  computed: {
+    // refactor this, I think this is not the best approach
+    occupiedWard: function occupiedWard() {
+      return this.filteredData.reduce(function (total, obj) {
+        total += obj.occupied_ward;
+        return total;
+      }, 0);
+    },
+    capacityWard: function capacityWard() {
+      return this.filteredData.reduce(function (total, obj) {
+        total += obj.ward_capacity;
+        return total;
+      }, 0);
+    },
+    occupiedIsolation: function occupiedIsolation() {
+      return this.filteredData.reduce(function (total, obj) {
+        total += obj.occupied_isolation;
+        return total;
+      }, 0);
+    },
+    capacityIsolation: function capacityIsolation() {
+      return this.filteredData.reduce(function (total, obj) {
+        total += obj.isolation_capacity;
+        return total;
+      }, 0);
+    },
+    occupiedICU: function occupiedICU() {
+      return this.filteredData.reduce(function (total, obj) {
+        total += obj.occupied_icu;
+        return total;
+      }, 0);
+    },
+    capacityICU: function capacityICU() {
+      return this.filteredData.reduce(function (total, obj) {
+        total += obj.icu_capacity;
+        return total;
+      }, 0);
+    }
+  },
   methods: {
-    sortByNameAsc: function sortByNameAsc() {
+    sortCol: function sortCol(name) {
+      this.setCurrentSortDir(name);
+      this.sortFilteredData();
+    },
+    setCurrentSortDir: function setCurrentSortDir(n) {
+      //if s == current sort, reverse
+      if (n === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+      }
+
+      this.currentSort = n;
+    },
+    sortFilteredData: function sortFilteredData() {
+      var _this2 = this;
+
       this.filteredData = this.filteredData.sort(function (a, b) {
-        if (a.name < b.name) {
-          return -1;
-        }
-
-        if (a.name > b.name) {
-          return 1;
-        }
-
+        var modifier = 1;
+        if (_this2.currentSortDir === "desc") modifier = -1;
+        if (a[_this2.currentSort] < b[_this2.currentSort]) return -1 * modifier;
+        if (a[_this2.currentSort] > b[_this2.currentSort]) return 1 * modifier;
         return 0;
       });
     },
@@ -4413,17 +4496,16 @@ __webpack_require__.r(__webpack_exports__);
       this.setFilteredDataByName();
       this.setFilteredDataByType();
       this.setFilteredDataByMunicipality();
-      console.log(this.filteredData);
     },
     setDefaultFilteredData: function setDefaultFilteredData() {
       this.filteredData = this.healthfacilities;
     },
     setFilteredDataByName: function setFilteredDataByName() {
-      var _this2 = this;
+      var _this3 = this;
 
       if (!this.nameQuery) return;
       this.filteredData = this.filteredData.filter(function (item) {
-        return item.name.toLowerCase().indexOf(_this2.nameQuery.toLowerCase()) > -1;
+        return item.name.toLowerCase().indexOf(_this3.nameQuery.toLowerCase()) > -1;
       });
     },
     setFilteredDataByType: function setFilteredDataByType() {
@@ -4457,21 +4539,21 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     formatDate: function formatDate(inputDate) {
-      var option1 = {
+      var dateOption = {
         weekday: "short",
         year: "numeric",
         month: "short",
         day: "numeric"
       };
-      var option2 = {
+      var timeOption = {
         hour: "numeric",
         minute: "numeric",
         hour12: true
       };
       var today = new Date();
       var date = new Date(inputDate);
-      var formatedDate = date.toLocaleDateString("en-US", option1);
-      var formatedTime = date.toLocaleString("en-US", option2); //if today
+      var formatedDate = date.toLocaleDateString("en-US", dateOption);
+      var formatedTime = date.toLocaleString("en-US", timeOption); //if today
 
       if (date.setHours(0, 0, 0, 0) == today.setHours(0, 0, 0, 0)) {
         return "Today, ".concat(formatedTime);
@@ -4494,9 +4576,9 @@ __webpack_require__.r(__webpack_exports__);
         "bg-green-100": capacity - occupied >= 1
       };
     },
-    classVenti: function classVenti(val) {
+    classVenti: function classVenti(occupied, capacity) {
       return {
-        "bg-purple-100": val >= 1
+        "bg-purple-100": capacity - occupied >= 1
       };
     },
     classHasToday: function classHasToday(str) {
@@ -4673,6 +4755,19 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -4680,7 +4775,9 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       loaded: false,
       selectedBedTotal: 1,
       //e.g. Bed Capacity, Occupied Bed
-      municipalitiesData: []
+      municipalitiesData: [],
+      currentSort: "name",
+      currentSortDir: "asc"
     };
   },
   created: function created() {
@@ -4695,6 +4792,29 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
     });
   },
   methods: {
+    sortCol: function sortCol(name) {
+      this.setCurrentSortDir(name);
+      this.sortMunicipalitiesData();
+    },
+    setCurrentSortDir: function setCurrentSortDir(n) {
+      //if s == current sort, reverse
+      if (n === this.currentSort) {
+        this.currentSortDir = this.currentSortDir === "asc" ? "desc" : "asc";
+      }
+
+      this.currentSort = n;
+    },
+    sortMunicipalitiesData: function sortMunicipalitiesData() {
+      var _this2 = this;
+
+      this.municipalitiesData = this.municipalitiesData.sort(function (a, b) {
+        var modifier = 1;
+        if (_this2.currentSortDir === "desc") modifier = -1;
+        if (a[_this2.currentSort] < b[_this2.currentSort]) return -1 * modifier;
+        if (a[_this2.currentSort] > b[_this2.currentSort]) return 1 * modifier;
+        return 0;
+      });
+    },
     classObj: function classObj(val, color) {
       var isOccupiedOverCapacity = String(val).includes("/"); //Occupied Bed/Bed Capacity e.g. 1/3
 
@@ -4711,9 +4831,10 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
 
       return _defineProperty({}, "bg-".concat(color, "-100"), val >= 1);
     },
+    // what if we created this using map - additional col to municipality data
     showSelectedBedTotal: function showSelectedBedTotal(mun, bedType) {
       var selected = this.selectedBedTotal;
-      return selected == 1 ? mun["total_".concat(bedType, "_capacity")] : selected == 2 ? mun["total_".concat(bedType, "_occupied")] : selected == 3 ? mun["total_".concat(bedType, "_capacity")] - mun["total_".concat(bedType, "_occupied")] : selected == 4 ? mun["total_".concat(bedType, "_occupied")] + "/" + mun["total_".concat(bedType, "_capacity")] : "";
+      return selected == 1 ? mun["total_".concat(bedType, "_capacity")] : selected == 2 ? mun["total_".concat(bedType, "_occupied")] : selected == 3 ? mun["total_".concat(bedType, "_vacant")] : selected == 4 ? mun["total_".concat(bedType, "_occupied")] + "/" + mun["total_".concat(bedType, "_capacity")] : "";
     }
   },
   computed: {
@@ -4727,6 +4848,415 @@ function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
       if (this.selectedBedTotal == 2) return "Occupied";
       if (this.selectedBedTotal == 3) return "Vacant";
       return "Total";
+    }
+  }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UpdateByDate.vue?vue&type=script&lang=js&":
+/*!*******************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UpdateByDate.vue?vue&type=script&lang=js& ***!
+  \*******************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var vuejs_datepicker__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! vuejs-datepicker */ "./node_modules/vuejs-datepicker/dist/vuejs-datepicker.esm.js");
+/* harmony import */ var _services_SuperAdminHistoryService_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ../services/SuperAdminHistoryService.js */ "./resources/js/services/SuperAdminHistoryService.js");
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function ownKeys(object, enumerableOnly) { var keys = Object.keys(object); if (Object.getOwnPropertySymbols) { var symbols = Object.getOwnPropertySymbols(object); if (enumerableOnly) { symbols = symbols.filter(function (sym) { return Object.getOwnPropertyDescriptor(object, sym).enumerable; }); } keys.push.apply(keys, symbols); } return keys; }
+
+function _objectSpread(target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i] != null ? arguments[i] : {}; if (i % 2) { ownKeys(Object(source), true).forEach(function (key) { _defineProperty(target, key, source[key]); }); } else if (Object.getOwnPropertyDescriptors) { Object.defineProperties(target, Object.getOwnPropertyDescriptors(source)); } else { ownKeys(Object(source)).forEach(function (key) { Object.defineProperty(target, key, Object.getOwnPropertyDescriptor(source, key)); }); } } return target; }
+
+function _defineProperty(obj, key, value) { if (key in obj) { Object.defineProperty(obj, key, { value: value, enumerable: true, configurable: true, writable: true }); } else { obj[key] = value; } return obj; }
+
+function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _unsupportedIterableToArray(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
+
+function _iterableToArrayLimit(arr, i) { var _i = arr && (typeof Symbol !== "undefined" && arr[Symbol.iterator] || arr["@@iterator"]); if (_i == null) return; var _arr = []; var _n = true; var _d = false; var _s, _e; try { for (_i = _i.call(arr); !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+
+
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  components: {
+    Datepicker: vuejs_datepicker__WEBPACK_IMPORTED_MODULE_0__.default
+  },
+  data: function data() {
+    return {
+      loaded: false,
+      histories: [],
+      singleHistoryPerDay: [],
+      date: new Date(),
+      checked: true
+    };
+  },
+  created: function created() {
+    this.setHistories(this.date);
+  },
+  methods: {
+    setHistories: function setHistories(date) {
+      var _this = this;
+
+      //bago ipasa dapat converted yung dateObj into yyyy/mm/dd
+      var myDate = date.toISOString().split("T")[0];
+      _services_SuperAdminHistoryService_js__WEBPACK_IMPORTED_MODULE_1__.default.getHistories(myDate).then(function (res) {
+        _this.loaded = false; //set activities data
+
+        _this.histories = res.data.data;
+        _this.singleHistoryPerDay = _this.setSingleHistoryPerDay(_this.histories);
+        _this.loaded = true;
+      })["catch"](function (err) {
+        console.log("There was an error:", err);
+      });
+    },
+    getTime: function getTime(date) {
+      var time = new Date(date);
+      return time.toLocaleString("en-US", {
+        hour: "numeric",
+        minute: "numeric",
+        hour12: true
+      });
+    },
+    // METHODS FOR REDUCING THE ARRAY
+    mapHistories: function mapHistories(arr) {
+      return arr.map(function (item) {
+        var _item$created_at$spli = item.created_at.split(" "),
+            _item$created_at$spli2 = _slicedToArray(_item$created_at$spli, 2),
+            date = _item$created_at$spli2[0],
+            time = _item$created_at$spli2[1];
+
+        return _objectSpread(_objectSpread({}, item), {}, {
+          date: date,
+          time: time
+        });
+      });
+    },
+    findHighestInGroup: function findHighestInGroup(data) {
+      return data.reduce(function (acc, curr) {
+        var time = curr.time;
+
+        if (time > acc.time) {
+          return _objectSpread({}, curr);
+        }
+
+        return acc;
+      }, {
+        time: ""
+      });
+    },
+    resolveLatestByTime: function resolveLatestByTime(data) {
+      var _this2 = this;
+
+      // Create an array of unique health_facility_name
+      var unique = _toConsumableArray(new Set(data.map(function (item) {
+        return item.health_facility_name;
+      }))); // loop in every unique health_facility_name
+
+
+      return unique.reduce(function (acc, curr) {
+        // Group the data per health_facility_name in every loop
+        var groupByName = data.filter(function (d) {
+          return d.health_facility_name === curr;
+        });
+        /**
+         * First loop will return e.g.
+         *  [
+         *    { health_facility_name: A, date: "01-01-2021", ...},
+         *    { health_facility_name: A, date: "01-01-2021", ... },
+         *    { health_facility_name: A, date: "01-01-2021", ... },
+         * ]
+         */
+        //reduce the health_facility_name of date and only return the latest
+
+        var highestInGroup = _this2.findHighestInGroup(groupByName);
+
+        return [].concat(_toConsumableArray(acc), [highestInGroup]);
+      }, []);
+    },
+    setSingleHistoryPerDay: function setSingleHistoryPerDay(histo) {
+      var mappedHistories = this.mapHistories(histo);
+      return this.resolveLatestByTime(mappedHistories);
+    },
+    classIsFull: function classIsFull(capacity, occupied) {
+      return {
+        "bg-red-200": capacity > 0 && capacity - occupied < 1
+      };
     }
   }
 });
@@ -4889,6 +5419,35 @@ var apiClient = axios.create({
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   getMunicipalities: function getMunicipalities() {
     return apiClient.get("/municipalities");
+  }
+});
+
+/***/ }),
+
+/***/ "./resources/js/services/SuperAdminHistoryService.js":
+/*!***********************************************************!*\
+  !*** ./resources/js/services/SuperAdminHistoryService.js ***!
+  \***********************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+var apiClient = axios.create({
+  baseURL: "http://127.0.0.1:8000/api",
+  withCredentials: false,
+  // This is the default
+  headers: {
+    Accept: "application/json",
+    "Content-Type": "application/json"
+  }
+});
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
+  // should be yyyy-mm-dd format
+  getHistories: function getHistories(date) {
+    return apiClient.get("superadmin/histories?_date=" + date);
   }
 });
 
@@ -61882,6 +62441,45 @@ component.options.__file = "resources/js/components/MunicipalityTable.vue"
 
 /***/ }),
 
+/***/ "./resources/js/components/UpdateByDate.vue":
+/*!**************************************************!*\
+  !*** ./resources/js/components/UpdateByDate.vue ***!
+  \**************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _UpdateByDate_vue_vue_type_template_id_257373b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true& */ "./resources/js/components/UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true&");
+/* harmony import */ var _UpdateByDate_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./UpdateByDate.vue?vue&type=script&lang=js& */ "./resources/js/components/UpdateByDate.vue?vue&type=script&lang=js&");
+/* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+
+
+
+
+
+/* normalize component */
+;
+var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__.default)(
+  _UpdateByDate_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__.default,
+  _UpdateByDate_vue_vue_type_template_id_257373b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render,
+  _UpdateByDate_vue_vue_type_template_id_257373b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns,
+  false,
+  null,
+  "257373b9",
+  null
+  
+)
+
+/* hot reload */
+if (false) { var api; }
+component.options.__file = "resources/js/components/UpdateByDate.vue"
+/* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (component.exports);
+
+/***/ }),
+
 /***/ "./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js&":
 /*!*****************************************************************************************!*\
   !*** ./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=script&lang=js& ***!
@@ -61946,6 +62544,22 @@ __webpack_require__.r(__webpack_exports__);
 
 /***/ }),
 
+/***/ "./resources/js/components/UpdateByDate.vue?vue&type=script&lang=js&":
+/*!***************************************************************************!*\
+  !*** ./resources/js/components/UpdateByDate.vue?vue&type=script&lang=js& ***!
+  \***************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
+/* harmony export */ });
+/* harmony import */ var _node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateByDate_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./UpdateByDate.vue?vue&type=script&lang=js& */ "./node_modules/babel-loader/lib/index.js??clonedRuleSet-5[0].rules[0].use[0]!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UpdateByDate.vue?vue&type=script&lang=js&");
+ /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (_node_modules_babel_loader_lib_index_js_clonedRuleSet_5_0_rules_0_use_0_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateByDate_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_0__.default); 
+
+/***/ }),
+
 /***/ "./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true&":
 /*!***********************************************************************************************************!*\
   !*** ./resources/js/components/HealthFacilityHistoryChart.vue?vue&type=template&id=da8c3ed8&scoped=true& ***!
@@ -61993,6 +62607,23 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_MunicipalityTable_vue_vue_type_template_id_6e9b98d7_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/MunicipalityTable.vue?vue&type=template&id=6e9b98d7&scoped=true&");
+
+
+/***/ }),
+
+/***/ "./resources/js/components/UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true&":
+/*!*********************************************************************************************!*\
+  !*** ./resources/js/components/UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true& ***!
+  \*********************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateByDate_vue_vue_type_template_id_257373b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.render),
+/* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateByDate_vue_vue_type_template_id_257373b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
+/* harmony export */ });
+/* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_UpdateByDate_vue_vue_type_template_id_257373b9_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true&");
 
 
 /***/ }),
@@ -62197,9 +62828,282 @@ var render = function() {
   return _c("div", { staticClass: "overflow-auto" }, [
     _vm._m(0),
     _vm._v(" "),
-    _vm._m(1),
+    _c(
+      "div",
+      { staticClass: "grid gap-6 mb-10 md:grid-cols-2 xl:grid-cols-3 mt-2" },
+      [
+        _c(
+          "div",
+          {
+            staticClass:
+              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+          },
+          [
+            _c("div", { staticClass: "text-center text-xl mb-1" }, [
+              _vm._v("ICU Beds")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+              },
+              [
+                _c("div", { staticClass: "flex-1 flex flex-col" }, [
+                  _c(
+                    "div",
+                    { staticClass: "text-sm text-center p-2 bg-yellow-200" },
+                    [
+                      _vm._v(
+                        "\n                        Occupied\n                    "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "flex-1 flex" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex flex-1 items-center justify-center border-r border-gray-200"
+                      },
+                      [
+                        _c("div", { staticClass: "text-xl text-gray-600" }, [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(_vm.occupiedICU) +
+                              "/" +
+                              _vm._s(_vm.capacityICU) +
+                              "\n                            "
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "flex-1 flex flex-col text-gray-600" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-sm text-center p-2 bg-yellow-300 font-semibold"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Vacant\n                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center h-full border-l border-gray-200 text-5xl"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.capacityICU - _vm.occupiedICU) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+          },
+          [
+            _c("div", { staticClass: "text-center text-xl mb-1" }, [
+              _vm._v("Ward Beds")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+              },
+              [
+                _c("div", { staticClass: "flex-1 flex flex-col" }, [
+                  _c(
+                    "div",
+                    { staticClass: "text-sm text-center p-2 bg-green-200" },
+                    [
+                      _vm._v(
+                        "\n                        Occupied\n                    "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "flex-1 flex" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex flex-1 items-center justify-center border-r border-gray-200"
+                      },
+                      [
+                        _c("div", { staticClass: "text-xl text-gray-600" }, [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(_vm.occupiedWard) +
+                              "/" +
+                              _vm._s(_vm.capacityWard) +
+                              "\n                            "
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "flex-1 flex flex-col text-gray-600" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-sm text-center p-2 bg-green-300 font-semibold"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Vacant\n                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center h-full border-l border-gray-200 text-5xl"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(_vm.capacityWard - _vm.occupiedWard) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "div",
+          {
+            staticClass:
+              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+          },
+          [
+            _c("div", { staticClass: "text-center text-xl mb-1" }, [
+              _vm._v("Isolation Beds")
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+              },
+              [
+                _c("div", { staticClass: "flex-1 flex flex-col" }, [
+                  _c(
+                    "div",
+                    { staticClass: "text-sm text-center p-2 bg-blue-200" },
+                    [
+                      _vm._v(
+                        "\n                        Occupied\n                    "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "flex-1 flex" }, [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex flex-1 items-center justify-center border-r border-gray-200"
+                      },
+                      [
+                        _c("div", { staticClass: "text-xl text-gray-600" }, [
+                          _vm._v(
+                            "\n                                " +
+                              _vm._s(_vm.occupiedIsolation) +
+                              "/" +
+                              _vm._s(_vm.capacityIsolation) +
+                              "\n                            "
+                          )
+                        ])
+                      ]
+                    )
+                  ])
+                ]),
+                _vm._v(" "),
+                _c(
+                  "div",
+                  { staticClass: "flex-1 flex flex-col text-gray-600" },
+                  [
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "text-sm text-center p-2 bg-blue-300 font-semibold"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        Vacant\n                    "
+                        )
+                      ]
+                    ),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      {
+                        staticClass:
+                          "flex items-center justify-center h-full  border-l border-gray-200 text-5xl"
+                      },
+                      [
+                        _vm._v(
+                          "\n                        " +
+                            _vm._s(
+                              _vm.capacityIsolation - _vm.occupiedIsolation
+                            ) +
+                            "\n                    "
+                        )
+                      ]
+                    )
+                  ]
+                )
+              ]
+            )
+          ]
+        )
+      ]
+    ),
     _vm._v(" "),
-    _c("div", { staticClass: " shadow-md border rounded-lg p-5 mb-10" }, [
+    _c("div", { staticClass: "shadow-md border rounded-lg p-5 mb-10" }, [
       _c("div", { staticClass: "grid grid-cols-4 gap-4 mb-5" }, [
         _c("div", { staticClass: "col-span-4 md:col-span-1" }, [
           _c("label", { staticClass: "block text-sm" }, [
@@ -62270,10 +63174,10 @@ var render = function() {
               [
                 _c("option", { attrs: { value: "All" } }, [_vm._v("All")]),
                 _vm._v(" "),
-                _c("option", { attrs: { value: "0" } }, [_vm._v("Hospitals")]),
+                _c("option", { attrs: { value: "0" } }, [_vm._v("Hospital")]),
                 _vm._v(" "),
                 _c("option", { attrs: { value: "1" } }, [
-                  _vm._v("Isolation Facilities")
+                  _vm._v("Isolation Facility")
                 ])
               ]
             )
@@ -62349,11 +63253,122 @@ var render = function() {
         { staticClass: "overflow-auto tableFixHead mb-10 table-min-height" },
         [
           _c("table", { attrs: { width: "100%" } }, [
-            _vm._m(2),
+            _c("thead", [
+              _c("tr", [
+                _c(
+                  "th",
+                  {
+                    staticClass:
+                      "bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal",
+                    on: {
+                      click: function($event) {
+                        return _vm.sortCol("name")
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            Name\n                        "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "th",
+                  {
+                    staticClass:
+                      "bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left min-width",
+                    on: {
+                      click: function($event) {
+                        return _vm.sortCol("icu_capacity")
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            ICU Beds\n                        "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "th",
+                  {
+                    staticClass:
+                      "bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left min-width",
+                    on: {
+                      click: function($event) {
+                        return _vm.sortCol("ward_capacity")
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            Ward Beds\n                        "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "th",
+                  {
+                    staticClass:
+                      "bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left min-width",
+                    on: {
+                      click: function($event) {
+                        return _vm.sortCol("isolation_capacity")
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            Isolation Beds\n                        "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "th",
+                  {
+                    staticClass:
+                      "bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left",
+                    on: {
+                      click: function($event) {
+                        return _vm.sortCol("updated_at")
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            Updated At\n                        "
+                    )
+                  ]
+                ),
+                _vm._v(" "),
+                _c(
+                  "th",
+                  {
+                    staticClass:
+                      "bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left",
+                    on: {
+                      click: function($event) {
+                        return _vm.sortCol("max_ventilator")
+                      }
+                    }
+                  },
+                  [
+                    _vm._v(
+                      "\n                            Ventilators\n                        "
+                    )
+                  ]
+                )
+              ])
+            ]),
             _vm._v(" "),
             _c(
               "tbody",
               _vm._l(_vm.filteredData, function(ref, index) {
+                var id = ref.id
                 var name = ref.name
                 var occupied_icu = ref.occupied_icu
                 var occupied_ward = ref.occupied_ward
@@ -62362,6 +63377,7 @@ var render = function() {
                 var isolation_capacity = ref.isolation_capacity
                 var ward_capacity = ref.ward_capacity
                 var max_ventilator = ref.max_ventilator
+                var active_ventilator = ref.active_ventilator
                 var updated_at = ref.updated_at
                 return _vm.loaded
                   ? _c(
@@ -62372,7 +63388,7 @@ var render = function() {
                       },
                       [
                         _c("td", { staticClass: "px-2 py-3 bg-opacity-80" }, [
-                          _vm._v(_vm._s(name))
+                          _vm._v("\n                           " + _vm._s(name))
                         ]),
                         _vm._v(" "),
                         _c(
@@ -62387,6 +63403,23 @@ var render = function() {
                                 _vm._s(occupied_icu) +
                                 "/" +
                                 _vm._s(icu_capacity) +
+                                "\n                        "
+                            )
+                          ]
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "td",
+                          {
+                            staticClass: "px-2 py-3 bg-opacity-80",
+                            class: _vm.classWard(occupied_ward, ward_capacity)
+                          },
+                          [
+                            _vm._v(
+                              "\n                            " +
+                                _vm._s(occupied_ward) +
+                                "/" +
+                                _vm._s(ward_capacity) +
                                 "\n                        "
                             )
                           ]
@@ -62414,23 +63447,6 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "td",
-                          {
-                            staticClass: "px-2 py-3 bg-opacity-80",
-                            class: _vm.classWard(occupied_ward, ward_capacity)
-                          },
-                          [
-                            _vm._v(
-                              "\n                            " +
-                                _vm._s(occupied_ward) +
-                                "/" +
-                                _vm._s(ward_capacity) +
-                                "\n                        "
-                            )
-                          ]
-                        ),
-                        _vm._v(" "),
-                        _c(
-                          "td",
                           { staticClass: "px-2 py-3 bg-opacity-80 text-sm" },
                           [
                             _c(
@@ -62450,11 +63466,16 @@ var render = function() {
                           "td",
                           {
                             staticClass: "px-2 py-3 bg-opacity-80",
-                            class: _vm.classVenti(max_ventilator)
+                            class: _vm.classVenti(
+                              active_ventilator,
+                              max_ventilator
+                            )
                           },
                           [
                             _vm._v(
                               "\n                            " +
+                                _vm._s(active_ventilator) +
+                                "/" +
                                 _vm._s(max_ventilator) +
                                 "\n                        "
                             )
@@ -62490,7 +63511,7 @@ var staticRenderFns = [
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
     return _c(
-      "h1",
+      "h2",
       {
         staticClass: "text-xl mb-2 font-semibold text-gray-700 text-opacity-95"
       },
@@ -62498,315 +63519,9 @@ var staticRenderFns = [
         _c("span", { staticClass: "text-yellow-500 mr-1 font-thin" }, [
           _vm._v("#")
         ]),
-        _vm._v("\n        Hospitals & Health Facilities\n    ")
+        _vm._v("\n        Health Facilities\n    ")
       ]
     )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c(
-      "div",
-      { staticClass: "grid gap-6 mb-10 md:grid-cols-2 xl:grid-cols-3 mt-2" },
-      [
-        _c(
-          "div",
-          {
-            staticClass:
-              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
-          },
-          [
-            _c("div", { staticClass: "text-center text-xl mb-1" }, [
-              _vm._v("Ward Beds")
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass:
-                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
-              },
-              [
-                _c("div", { staticClass: "flex-1 flex flex-col" }, [
-                  _c(
-                    "div",
-                    { staticClass: "text-sm text-center p-2 bg-green-200" },
-                    [_vm._v("\n                    Occupied\n                ")]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "flex-1 flex" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "flex flex-1 items-center justify-center border-r border-gray-200"
-                      },
-                      [
-                        _c("div", { staticClass: "text-xl text-gray-600" }, [
-                          _vm._v(
-                            "\n                            1/10\n                        "
-                          )
-                        ])
-                      ]
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "flex-1 flex flex-col text-gray-600" },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "text-sm text-center p-2 bg-green-300 font-semibold"
-                      },
-                      [_vm._v("Vacant")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "flex items-center justify-center h-full border-l border-gray-200 text-5xl"
-                      },
-                      [_vm._v("\n                   9\n                ")]
-                    )
-                  ]
-                )
-              ]
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass:
-              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
-          },
-          [
-            _c("div", { staticClass: "text-center text-xl mb-1" }, [
-              _vm._v("Isolation Beds")
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass:
-                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
-              },
-              [
-                _c("div", { staticClass: "flex-1 flex flex-col" }, [
-                  _c(
-                    "div",
-                    { staticClass: "text-sm text-center p-2 bg-blue-200" },
-                    [_vm._v("\n                    Occupied\n                ")]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "flex-1 flex" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "flex flex-1 items-center justify-center border-r border-gray-200"
-                      },
-                      [
-                        _c("div", { staticClass: "text-xl text-gray-600" }, [
-                          _vm._v(
-                            "\n                          5/11\n                        "
-                          )
-                        ])
-                      ]
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "flex-1 flex flex-col text-gray-600" },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "text-sm text-center p-2 bg-blue-300 font-semibold"
-                      },
-                      [_vm._v("Vacant")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "flex items-center justify-center h-full  border-l border-gray-200 text-5xl"
-                      },
-                      [_vm._v("\n                  6\n                ")]
-                    )
-                  ]
-                )
-              ]
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "div",
-          {
-            staticClass:
-              "h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
-          },
-          [
-            _c("div", { staticClass: "text-center text-xl mb-1" }, [
-              _vm._v("ICU Beds")
-            ]),
-            _vm._v(" "),
-            _c(
-              "div",
-              {
-                staticClass:
-                  "flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
-              },
-              [
-                _c("div", { staticClass: "flex-1 flex flex-col" }, [
-                  _c(
-                    "div",
-                    { staticClass: "text-sm text-center p-2 bg-yellow-200" },
-                    [_vm._v("\n                    Occupied\n                ")]
-                  ),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "flex-1 flex" }, [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "flex flex-1 items-center justify-center border-r border-gray-200"
-                      },
-                      [
-                        _c("div", { staticClass: "text-xl text-gray-600" }, [
-                          _vm._v(
-                            "\n                           1/4\n                        "
-                          )
-                        ])
-                      ]
-                    )
-                  ])
-                ]),
-                _vm._v(" "),
-                _c(
-                  "div",
-                  { staticClass: "flex-1 flex flex-col text-gray-600" },
-                  [
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "text-sm text-center p-2 bg-yellow-300 font-semibold"
-                      },
-                      [_vm._v("Vacant")]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "div",
-                      {
-                        staticClass:
-                          "flex items-center justify-center h-full border-l border-gray-200 text-5xl"
-                      },
-                      [_vm._v("\n                    3\n                ")]
-                    )
-                  ]
-                )
-              ]
-            )
-          ]
-        )
-      ]
-    )
-  },
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("thead", [
-      _c("tr", [
-        _c(
-          "th",
-          { staticClass: "bg-blue-500 text-white px-2 py-3 font-normal" },
-          [
-            _vm._v(
-              "\n                            Name\n                        "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass:
-              "bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
-          },
-          [
-            _vm._v(
-              "\n                            ICU Beds\n                        "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass:
-              "bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
-          },
-          [
-            _vm._v(
-              "\n                            Isolation Beds\n                        "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass:
-              "bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
-          },
-          [
-            _vm._v(
-              "\n                            Ward Beds\n                        "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass:
-              "bg-blue-500 text-white px-2 py-3 font-normal text-left"
-          },
-          [
-            _vm._v(
-              "\n                            Last update\n                        "
-            )
-          ]
-        ),
-        _vm._v(" "),
-        _c(
-          "th",
-          {
-            staticClass:
-              "bg-blue-500 text-white px-2 py-3 font-normal text-left"
-          },
-          [
-            _vm._v(
-              "\n                            Ventilators\n                        "
-            )
-          ]
-        )
-      ])
-    ])
   }
 ]
 render._withStripped = true
@@ -62913,8 +63628,13 @@ var render = function() {
                   _c(
                     "th",
                     {
-                      staticClass: "text-white p-2 font-normal",
-                      attrs: { width: "200" }
+                      staticClass: "text-white p-2 font-normal cursor-pointer",
+                      attrs: { width: "200" },
+                      on: {
+                        click: function($event) {
+                          return _vm.sortCol("name")
+                        }
+                      }
                     },
                     [
                       _vm._v(
@@ -62923,29 +63643,62 @@ var render = function() {
                     ]
                   ),
                   _vm._v(" "),
-                  _c("th", { staticClass: "text-white p-2 font-normal" }, [
-                    _vm._v(
-                      "\n                            " +
-                        _vm._s(_vm.text) +
-                        " ICU Beds\n                        "
-                    )
-                  ]),
+                  _c(
+                    "th",
+                    {
+                      staticClass: "text-white p-2 font-normal cursor-pointer",
+                      on: {
+                        click: function($event) {
+                          return _vm.sortCol("total_icu_capacity")
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.text) +
+                          " ICU Beds\n                        "
+                      )
+                    ]
+                  ),
                   _vm._v(" "),
-                  _c("th", { staticClass: "text-white p-2 font-normal" }, [
-                    _vm._v(
-                      "\n                            " +
-                        _vm._s(_vm.text) +
-                        " Isolation Beds\n                        "
-                    )
-                  ]),
+                  _c(
+                    "th",
+                    {
+                      staticClass: "text-white p-2 font-normal cursor-pointer",
+                      on: {
+                        click: function($event) {
+                          return _vm.sortCol("total_ward_capacity")
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.text) +
+                          " Ward Beds\n                        "
+                      )
+                    ]
+                  ),
                   _vm._v(" "),
-                  _c("th", { staticClass: "text-white p-2 font-normal" }, [
-                    _vm._v(
-                      "\n                            " +
-                        _vm._s(_vm.text) +
-                        " Ward Beds\n                        "
-                    )
-                  ])
+                  _c(
+                    "th",
+                    {
+                      staticClass: "text-white p-2 font-normal cursor-pointer",
+                      on: {
+                        click: function($event) {
+                          return _vm.sortCol("total_isolation_capacity")
+                        }
+                      }
+                    },
+                    [
+                      _vm._v(
+                        "\n                            " +
+                          _vm._s(_vm.text) +
+                          " Isolation Beds\n                        "
+                      )
+                    ]
+                  )
                 ]
               )
             ]),
@@ -62985,15 +63738,15 @@ var render = function() {
                       {
                         staticClass: "p-2 bg-opacity-80",
                         class: _vm.classObj(
-                          _vm.showSelectedBedTotal(m, "isolation"),
-                          "blue"
+                          _vm.showSelectedBedTotal(m, "ward"),
+                          "green"
                         ),
                         attrs: { width: "150" }
                       },
                       [
                         _vm._v(
                           "\n                            " +
-                            _vm._s(_vm.showSelectedBedTotal(m, "isolation")) +
+                            _vm._s(_vm.showSelectedBedTotal(m, "ward")) +
                             "\n                        "
                         )
                       ]
@@ -63004,15 +63757,15 @@ var render = function() {
                       {
                         staticClass: "p-2 bg-opacity-80",
                         class: _vm.classObj(
-                          _vm.showSelectedBedTotal(m, "ward"),
-                          "green"
+                          _vm.showSelectedBedTotal(m, "isolation"),
+                          "blue"
                         ),
                         attrs: { width: "150" }
                       },
                       [
                         _vm._v(
                           "\n                            " +
-                            _vm._s(_vm.showSelectedBedTotal(m, "ward")) +
+                            _vm._s(_vm.showSelectedBedTotal(m, "isolation")) +
                             "\n                        "
                         )
                       ]
@@ -63041,6 +63794,579 @@ var render = function() {
   ])
 }
 var staticRenderFns = []
+render._withStripped = true
+
+
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true&":
+/*!************************************************************************************************************************************************************************************************************************************!*\
+  !*** ./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/UpdateByDate.vue?vue&type=template&id=257373b9&scoped=true& ***!
+  \************************************************************************************************************************************************************************************************************************************/
+/***/ ((__unused_webpack_module, __webpack_exports__, __webpack_require__) => {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+/* harmony export */ __webpack_require__.d(__webpack_exports__, {
+/* harmony export */   "render": () => (/* binding */ render),
+/* harmony export */   "staticRenderFns": () => (/* binding */ staticRenderFns)
+/* harmony export */ });
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c(
+    "div",
+    {
+      staticClass: "shadow-md border rounded-lg p-4 sm:p-5 mb-10 overflow-auto",
+      staticStyle: { "min-height": "500px" }
+    },
+    [
+      _c(
+        "div",
+        { staticClass: "flex flex-col md:flex-row mb-2 text-gray-600" },
+        [
+          _c("datepicker", {
+            attrs: {
+              "input-class":
+                "text-sm mb-2 md:mb-0 border w-11/12 md:w-auto p-1 rounded font-semibold",
+              placeholder: "Date",
+              "full-month-name": true,
+              "clear-button": true
+            },
+            model: {
+              value: _vm.date,
+              callback: function($$v) {
+                _vm.date = $$v
+              },
+              expression: "date"
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "button",
+            {
+              staticClass:
+                "w-11/12 md:w-auto md:ml-4  px-3 flex-none py-1 text-sm font-medium leading-5\n             text-white transition-colors duration-150 border \n             border-transparent rounded-md bg-blue-500 hover:bg-blue-600 \n             focus:outline-none",
+              on: {
+                click: function($event) {
+                  return _vm.setHistories(_vm.date)
+                }
+              }
+            },
+            [_vm._v("\n            Filter\n        ")]
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c("div", { staticClass: "flex" }, [
+        _c("div", { staticClass: "mb-8" }, [
+          _c("input", {
+            directives: [
+              {
+                name: "model",
+                rawName: "v-model",
+                value: _vm.checked,
+                expression: "checked"
+              }
+            ],
+            staticClass: "align-middle",
+            attrs: { type: "checkbox", id: "checkbox" },
+            domProps: {
+              checked: Array.isArray(_vm.checked)
+                ? _vm._i(_vm.checked, null) > -1
+                : _vm.checked
+            },
+            on: {
+              change: function($event) {
+                var $$a = _vm.checked,
+                  $$el = $event.target,
+                  $$c = $$el.checked ? true : false
+                if (Array.isArray($$a)) {
+                  var $$v = null,
+                    $$i = _vm._i($$a, $$v)
+                  if ($$el.checked) {
+                    $$i < 0 && (_vm.checked = $$a.concat([$$v]))
+                  } else {
+                    $$i > -1 &&
+                      (_vm.checked = $$a
+                        .slice(0, $$i)
+                        .concat($$a.slice($$i + 1)))
+                  }
+                } else {
+                  _vm.checked = $$c
+                }
+              }
+            }
+          }),
+          _vm._v(" "),
+          _c(
+            "label",
+            {
+              staticClass: "text-sm text-gray-600",
+              attrs: { for: "checkbox" }
+            },
+            [_vm._v("Last Update Only")]
+          )
+        ])
+      ]),
+      _vm._v(" "),
+      !_vm.checked
+        ? _c(
+            "div",
+            [
+              _vm._l(_vm.histories, function(history) {
+                return _c("div", [
+                  _c(
+                    "h2",
+                    {
+                      staticClass: "text-xl mb-2 text-gray-700 text-opacity-95"
+                    },
+                    [
+                      _c(
+                        "span",
+                        { staticClass: "text-yellow-500 mr-1 font-thin" },
+                        [_vm._v("#")]
+                      ),
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(history.health_facility_name) +
+                          "\n            "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "border border-gray-300 shadow-md p-4 rounded bg-gray-100 bg-opacity-70 mb-8"
+                    },
+                    [
+                      _c(
+                        "p",
+                        {
+                          staticClass:
+                            "text-xs text-gray-500 font-semibold -mt-1 mb-5"
+                        },
+                        [
+                          _vm._v(
+                            "\n                    " +
+                              _vm._s(_vm.getTime(history.created_at)) +
+                              "\n                "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "table",
+                        {
+                          staticClass: "overflow-auto block sm:table",
+                          attrs: { width: "100%" }
+                        },
+                        [
+                          _vm._m(0, true),
+                          _vm._v(" "),
+                          _c("tbody", [
+                            _c(
+                              "tr",
+                              {
+                                staticClass:
+                                  "hover:bg-gray-200 text-gray-600 bg-white"
+                              },
+                              [
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.icu_capacity,
+                                      history.occupied_icu
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.occupied_icu) +
+                                        "/" +
+                                        _vm._s(history.icu_capacity) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.ward_capacity,
+                                      history.occupied_ward
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.occupied_ward) +
+                                        "/" +
+                                        _vm._s(history.ward_capacity) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.isolation_capacity,
+                                      history.occupied_isolation
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.occupied_isolation) +
+                                        "/" +
+                                        _vm._s(history.isolation_capacity) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.max_ventilator,
+                                      history.active_ventilator
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.active_ventilator) +
+                                        "/" +
+                                        _vm._s(history.max_ventilator) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                )
+                              ]
+                            )
+                          ])
+                        ]
+                      )
+                    ]
+                  )
+                ])
+              }),
+              _vm._v(" "),
+              _vm.loaded && _vm.histories.length === 0
+                ? _c("div", { staticClass: "text-red-500 font-semibold" }, [
+                    _vm._v("\n            NO UPDATE FOUND\n        ")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.loaded
+                ? _c("div", [_vm._v("\n            Loading...\n        ")])
+                : _vm._e()
+            ],
+            2
+          )
+        : _c(
+            "div",
+            [
+              _vm._l(_vm.singleHistoryPerDay, function(history) {
+                return _c("div", [
+                  _c(
+                    "h2",
+                    {
+                      staticClass: "text-xl mb-2 text-gray-700 text-opacity-95"
+                    },
+                    [
+                      _c(
+                        "span",
+                        { staticClass: "text-yellow-500 mr-1 font-thin" },
+                        [_vm._v("#")]
+                      ),
+                      _vm._v(
+                        "\n                " +
+                          _vm._s(history.health_facility_name) +
+                          "\n            "
+                      )
+                    ]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "div",
+                    {
+                      staticClass:
+                        "border border-gray-300 shadow-md p-4 rounded bg-gray-100 bg-opacity-70 mb-8"
+                    },
+                    [
+                      _c(
+                        "p",
+                        {
+                          staticClass:
+                            "text-xs text-gray-500 font-semibold -mt-1 mb-5"
+                        },
+                        [
+                          _vm._v(
+                            "\n                    " +
+                              _vm._s(_vm.getTime(history.created_at)) +
+                              "\n                "
+                          )
+                        ]
+                      ),
+                      _vm._v(" "),
+                      _c(
+                        "table",
+                        {
+                          staticClass: "overflow-auto block sm:table",
+                          attrs: { width: "100%" }
+                        },
+                        [
+                          _vm._m(1, true),
+                          _vm._v(" "),
+                          _c("tbody", [
+                            _c(
+                              "tr",
+                              {
+                                staticClass:
+                                  "hover:bg-gray-200 text-gray-600 bg-white"
+                              },
+                              [
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.icu_capacity,
+                                      history.occupied_icu
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.occupied_icu) +
+                                        "/" +
+                                        _vm._s(history.icu_capacity) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.ward_capacity,
+                                      history.occupied_ward
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.occupied_ward) +
+                                        "/" +
+                                        _vm._s(history.ward_capacity) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.isolation_capacity,
+                                      history.occupied_isolation
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.occupied_isolation) +
+                                        "/" +
+                                        _vm._s(history.isolation_capacity) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "td",
+                                  {
+                                    staticClass:
+                                      "p-2 bg-opacity-80 border border-gray-300 text-center",
+                                    class: _vm.classIsFull(
+                                      history.max_ventilator,
+                                      history.active_ventilator
+                                    )
+                                  },
+                                  [
+                                    _vm._v(
+                                      "\n                                " +
+                                        _vm._s(history.active_ventilator) +
+                                        "/" +
+                                        _vm._s(history.max_ventilator) +
+                                        "\n                            "
+                                    )
+                                  ]
+                                )
+                              ]
+                            )
+                          ])
+                        ]
+                      )
+                    ]
+                  )
+                ])
+              }),
+              _vm._v(" "),
+              _vm.loaded && _vm.singleHistoryPerDay.length === 0
+                ? _c("div", { staticClass: "text-red-500 font-semibold" }, [
+                    _vm._v("\n            NO UPDATE FOUND\n        ")
+                  ])
+                : _vm._e(),
+              _vm._v(" "),
+              !_vm.loaded
+                ? _c("div", [_vm._v("\n            Loading...\n        ")])
+                : _vm._e()
+            ],
+            2
+          )
+    ]
+  )
+}
+var staticRenderFns = [
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                ICU Beds\n                            "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                Ward Beds\n                            "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                Isolation Beds\n                            "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                Ventilators\n                            "
+            )
+          ]
+        )
+      ])
+    ])
+  },
+  function() {
+    var _vm = this
+    var _h = _vm.$createElement
+    var _c = _vm._self._c || _h
+    return _c("thead", [
+      _c("tr", [
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                ICU Beds\n                            "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                Ward Beds\n                            "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                Isolation Beds\n                            "
+            )
+          ]
+        ),
+        _vm._v(" "),
+        _c(
+          "th",
+          {
+            staticClass: "bg-gray-500 bg-opacity-70 text-white p-2 font-normal"
+          },
+          [
+            _vm._v(
+              "\n                                Ventilators\n                            "
+            )
+          ]
+        )
+      ])
+    ])
+  }
+]
 render._withStripped = true
 
 
@@ -77988,7 +79314,8 @@ var map = {
 	"./components/HealthFacilityHistoryChart.vue": "./resources/js/components/HealthFacilityHistoryChart.vue",
 	"./components/HealthFacilityTable.vue": "./resources/js/components/HealthFacilityTable.vue",
 	"./components/LineChart.vue": "./resources/js/components/LineChart.vue",
-	"./components/MunicipalityTable.vue": "./resources/js/components/MunicipalityTable.vue"
+	"./components/MunicipalityTable.vue": "./resources/js/components/MunicipalityTable.vue",
+	"./components/UpdateByDate.vue": "./resources/js/components/UpdateByDate.vue"
 };
 
 

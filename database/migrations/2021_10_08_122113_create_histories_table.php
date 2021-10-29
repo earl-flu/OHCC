@@ -24,7 +24,10 @@ class CreateHistoriesTable extends Migration
             $table->string('occupied_icu')->nullable();
             $table->string('occupied_isolation')->nullable();
             $table->string('occupied_ward')->nullable();
-            $table->string('ventilator')->nullable();
+            $table->string('max_ventilator')->nullable();
+            $table->smallInteger('active_ventilator')
+                ->unsigned()
+                ->default(0);
             $table->string('log_name');
             $table->timestamps();
         });

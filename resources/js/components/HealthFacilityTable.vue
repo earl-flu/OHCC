@@ -1,93 +1,124 @@
 <template>
     <div class="overflow-auto">
-        <h1 class="text-xl mb-2 font-semibold text-gray-700 text-opacity-95">
+        <h2 class="text-xl mb-2 font-semibold text-gray-700 text-opacity-95">
             <span class="text-yellow-500 mr-1 font-thin">#</span>
-            Hospitals & Health Facilities
-        </h1>
-        
+            Health Facilities
+        </h2>
+
         <div class="grid gap-6 mb-10 md:grid-cols-2 xl:grid-cols-3 mt-2">
-        <!--Card-->
-        <div
-            class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 ">
-            <div class="text-center text-xl mb-1">Ward Beds</div>
-            <div class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden">
-                <div class="flex-1 flex flex-col">
-                    <div class="text-sm text-center p-2 bg-green-200">
-                        Occupied
-                    </div>
-                    <div class="flex-1 flex">
-                        <div class="flex flex-1 items-center justify-center border-r border-gray-200">
-                            <div class="text-xl text-gray-600">
-                                1/10
+            <!--Card-->
+            <div
+                class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+            >
+                <div class="text-center text-xl mb-1">ICU Beds</div>
+                <div
+                    class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+                >
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-sm text-center p-2 bg-yellow-200">
+                            Occupied
+                        </div>
+                        <div class="flex-1 flex">
+                            <div
+                                class="flex flex-1 items-center justify-center border-r border-gray-200"
+                            >
+                                <div class="text-xl text-gray-600">
+                                    {{ occupiedICU }}/{{ capacityICU }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="flex-1 flex flex-col text-gray-600">
-                    <div class="text-sm text-center p-2 bg-green-300 font-semibold">Vacant</div>
-                    <div class="flex items-center justify-center h-full border-l border-gray-200 text-5xl">
-                       9
-                    </div>
-
-                </div>
-            </div>
-        </div>
-
-        <!--Card-->
-        <div
-            class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 ">
-            <div class="text-center text-xl mb-1">Isolation Beds</div>
-            <div class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden">
-                <div class="flex-1 flex flex-col">
-                    <div class="text-sm text-center p-2 bg-blue-200">
-                        Occupied
-                    </div>
-                    <div class="flex-1 flex">
-                        <div class="flex flex-1 items-center justify-center border-r border-gray-200">
-                            <div class="text-xl text-gray-600">
-                              5/11
-                            </div>
+                    <div class="flex-1 flex flex-col text-gray-600">
+                        <div
+                            class="text-sm text-center p-2 bg-yellow-300 font-semibold"
+                        >
+                            Vacant
+                        </div>
+                        <div
+                            class="flex items-center justify-center h-full border-l border-gray-200 text-5xl"
+                        >
+                            {{ capacityICU - occupiedICU }}
                         </div>
                     </div>
                 </div>
-                <div class="flex-1 flex flex-col text-gray-600">
-                    <div class="text-sm text-center p-2 bg-blue-300 font-semibold">Vacant</div>
-                    <div class="flex items-center justify-center h-full  border-l border-gray-200 text-5xl">
-                      6
-                    </div>
-
-                </div>
             </div>
-        </div>
-
-        <!--Card-->
-        <div
-            class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 ">
-            <div class="text-center text-xl mb-1">ICU Beds</div>
-            <div class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden">
-                <div class="flex-1 flex flex-col">
-                    <div class="text-sm text-center p-2 bg-yellow-200">
-                        Occupied
-                    </div>
-                    <div class="flex-1 flex">
-                        <div class="flex flex-1 items-center justify-center border-r border-gray-200">
-                            <div class="text-xl text-gray-600">
-                               1/4
+            <!--Card-->
+            <div
+                class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+            >
+                <div class="text-center text-xl mb-1">Ward Beds</div>
+                <div
+                    class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+                >
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-sm text-center p-2 bg-green-200">
+                            Occupied
+                        </div>
+                        <div class="flex-1 flex">
+                            <div
+                                class="flex flex-1 items-center justify-center border-r border-gray-200"
+                            >
+                                <div class="text-xl text-gray-600">
+                                    {{ occupiedWard }}/{{ capacityWard }}
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
-                <div class="flex-1 flex flex-col text-gray-600">
-                    <div class="text-sm text-center p-2 bg-yellow-300 font-semibold">Vacant</div>
-                    <div class="flex items-center justify-center h-full border-l border-gray-200 text-5xl">
-                        3
+                    <div class="flex-1 flex flex-col text-gray-600">
+                        <div
+                            class="text-sm text-center p-2 bg-green-300 font-semibold"
+                        >
+                            Vacant
+                        </div>
+                        <div
+                            class="flex items-center justify-center h-full border-l border-gray-200 text-5xl"
+                        >
+                            {{ capacityWard - occupiedWard }}
+                        </div>
                     </div>
+                </div>
+            </div>
 
+            <!--Card-->
+            <div
+                class="h-36 flex flex-col p-2 bg-white rounded-lg shadow-md border dark:border-transparent dark:bg-gray-800 "
+            >
+                <div class="text-center text-xl mb-1">Isolation Beds</div>
+                <div
+                    class="flex items-stretch h-full border border-gray-300 rounded overflow-hidden"
+                >
+                    <div class="flex-1 flex flex-col">
+                        <div class="text-sm text-center p-2 bg-blue-200">
+                            Occupied
+                        </div>
+                        <div class="flex-1 flex">
+                            <div
+                                class="flex flex-1 items-center justify-center border-r border-gray-200"
+                            >
+                                <div class="text-xl text-gray-600">
+                                    {{ occupiedIsolation }}/{{
+                                        capacityIsolation
+                                    }}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="flex-1 flex flex-col text-gray-600">
+                        <div
+                            class="text-sm text-center p-2 bg-blue-300 font-semibold"
+                        >
+                            Vacant
+                        </div>
+                        <div
+                            class="flex items-center justify-center h-full  border-l border-gray-200 text-5xl"
+                        >
+                            {{ capacityIsolation - occupiedIsolation }}
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
-    </div>
-        <div class=" shadow-md border rounded-lg p-5 mb-10">
+        <div class="shadow-md border rounded-lg p-5 mb-10">
             <!-- Filter Container-->
             <div class="grid grid-cols-4 gap-4 mb-5">
                 <div class="col-span-4 md:col-span-1">
@@ -118,8 +149,8 @@
                             class="block w-full mt-1 rounded text-sm border dark:text-gray-300 dark:border-gray-600 dark:bg-gray-700 form-select focus:border-purple-400 focus:outline-none focus:shadow-outline-purple dark:focus:shadow-outline-gray"
                         >
                             <option value="All">All</option>
-                            <option value="0">Hospitals</option>
-                            <option value="1">Isolation Facilities</option>
+                            <option value="0">Hospital</option>
+                            <option value="1">Isolation Facility</option>
                         </select>
                     </label>
                 </div>
@@ -151,13 +182,6 @@
                     >
                         Filter
                     </button>
-                    <!-- <button
-                        @click="sortByNameAsc"
-                        class="w-full md:align-bottom md:w-36 text-sm focus:outline-none border border-transparent py-2 px-3
-                        rounded-lg shadow-sm text-center text-white bg-blue-500 hover:bg-blue-600 font-medium"
-                    >
-                        SortByName
-                    </button> -->
                 </div>
             </div>
             <!--End Filter Container-->
@@ -167,33 +191,38 @@
                     <thead>
                         <tr>
                             <th
-                                class="bg-blue-500 text-white px-2 py-3 font-normal"
+                                @click="sortCol('name')"
+                                class="bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal"
                             >
                                 Name
                             </th>
                             <th
-                                class="bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
+                                @click="sortCol('icu_capacity')"
+                                class="bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left min-width"
                             >
                                 ICU Beds
                             </th>
                             <th
-                                class="bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
+                                @click="sortCol('ward_capacity')"
+                                class="bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left min-width"
+                            >
+                                Ward Beds
+                            </th>
+                            <th
+                                @click="sortCol('isolation_capacity')"
+                                class="bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left min-width"
                             >
                                 Isolation Beds
                             </th>
                             <th
-                                class="bg-blue-500 text-white px-2 py-3 font-normal text-left min-width"
+                                @click="sortCol('updated_at')"
+                                class="bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left"
                             >
-                                Ward Beds
-                            </th>
-
-                            <th
-                                class="bg-blue-500 text-white px-2 py-3 font-normal text-left"
-                            >
-                                Last update
+                                Updated At
                             </th>
                             <th
-                                class="bg-blue-500 text-white px-2 py-3 font-normal text-left"
+                                @click="sortCol('max_ventilator')"
+                                class="bg-blue-500 cursor-pointer text-white px-2 py-3 font-normal text-left"
                             >
                                 Ventilators
                             </th>
@@ -204,6 +233,7 @@
                             class="hover:bg-gray-100 text-gray-600"
                             v-if="loaded"
                             v-for="({
+                                id,
                                 name,
                                 occupied_icu,
                                 occupied_ward,
@@ -212,17 +242,25 @@
                                 isolation_capacity,
                                 ward_capacity,
                                 max_ventilator,
+                                active_ventilator,
                                 updated_at
                             },
                             index) in filteredData"
                             :key="index"
                         >
-                            <td class="px-2 py-3 bg-opacity-80">{{ name }}</td>
+                            <td class="px-2 py-3 bg-opacity-80">
+                               {{ name }}</td>
                             <td
                                 class="px-2 py-3 bg-opacity-80"
                                 :class="classICU(occupied_icu, icu_capacity)"
                             >
                                 {{ occupied_icu }}/{{ icu_capacity }}
+                            </td>
+                            <td
+                                class="px-2 py-3 bg-opacity-80"
+                                :class="classWard(occupied_ward, ward_capacity)"
+                            >
+                                {{ occupied_ward }}/{{ ward_capacity }}
                             </td>
                             <td
                                 class="px-2 py-3 bg-opacity-80"
@@ -237,12 +275,6 @@
                                     isolation_capacity
                                 }}
                             </td>
-                            <td
-                                class="px-2 py-3 bg-opacity-80"
-                                :class="classWard(occupied_ward, ward_capacity)"
-                            >
-                                {{ occupied_ward }}/{{ ward_capacity }}
-                            </td>
                             <td class="px-2 py-3 bg-opacity-80 text-sm">
                                 <span
                                     class="p-2 rounded"
@@ -254,9 +286,9 @@
                             </td>
                             <td
                                 class="px-2 py-3 bg-opacity-80"
-                                :class="classVenti(max_ventilator)"
+                                :class="classVenti(active_ventilator,max_ventilator)"
                             >
-                                {{ max_ventilator }}
+                                {{ active_ventilator }}/{{ max_ventilator }}
                             </td>
                         </tr>
                     </tbody>
@@ -284,7 +316,9 @@ export default {
             selectedMunicipality: "All",
             loaded: false,
             healthfacilities: [],
-            filteredData: []
+            filteredData: [],
+            currentSort: "name",
+            currentSortDir: "asc"
         };
     },
     created() {
@@ -299,16 +333,66 @@ export default {
                 console.log("There was an error:", err);
             });
     },
-
+    computed: {
+        // refactor this, I think this is not the best approach
+        occupiedWard() {
+            return this.filteredData.reduce((total, obj) => {
+                total += obj.occupied_ward;
+                return total;
+            }, 0);
+        },
+        capacityWard() {
+            return this.filteredData.reduce((total, obj) => {
+                total += obj.ward_capacity;
+                return total;
+            }, 0);
+        },
+        occupiedIsolation() {
+            return this.filteredData.reduce((total, obj) => {
+                total += obj.occupied_isolation;
+                return total;
+            }, 0);
+        },
+        capacityIsolation() {
+            return this.filteredData.reduce((total, obj) => {
+                total += obj.isolation_capacity;
+                return total;
+            }, 0);
+        },
+        occupiedICU() {
+            return this.filteredData.reduce((total, obj) => {
+                total += obj.occupied_icu;
+                return total;
+            }, 0);
+        },
+        capacityICU() {
+            return this.filteredData.reduce((total, obj) => {
+                total += obj.icu_capacity;
+                return total;
+            }, 0);
+        }
+    },
     methods: {
-        sortByNameAsc() {
+        sortCol(name) {
+            this.setCurrentSortDir(name);
+            this.sortFilteredData();
+        },
+        setCurrentSortDir(n) {
+            //if s == current sort, reverse
+            if (n === this.currentSort) {
+                this.currentSortDir =
+                    this.currentSortDir === "asc" ? "desc" : "asc";
+            }
+            this.currentSort = n;
+        },
+        sortFilteredData() {
             this.filteredData = this.filteredData.sort((a, b) => {
-                if (a.name < b.name) {
-                    return -1;
-                }
-                if (a.name > b.name) {
-                    return 1;
-                }
+                let modifier = 1;
+                if (this.currentSortDir === "desc") modifier = -1;
+                if (a[this.currentSort] < b[this.currentSort])
+                    return -1 * modifier;
+                if (a[this.currentSort] > b[this.currentSort])
+                    return 1 * modifier;
                 return 0;
             });
         },
@@ -317,7 +401,6 @@ export default {
             this.setFilteredDataByName();
             this.setFilteredDataByType();
             this.setFilteredDataByMunicipality();
-            console.log(this.filteredData)
         },
 
         setDefaultFilteredData() {
@@ -362,21 +445,21 @@ export default {
             }
         },
         formatDate(inputDate) {
-            const option1 = {
+            const dateOption = {
                 weekday: "short",
                 year: "numeric",
                 month: "short",
                 day: "numeric"
             };
-            const option2 = {
+            const timeOption = {
                 hour: "numeric",
                 minute: "numeric",
                 hour12: true
             };
             const today = new Date();
             const date = new Date(inputDate);
-            const formatedDate = date.toLocaleDateString("en-US", option1);
-            const formatedTime = date.toLocaleString("en-US", option2);
+            const formatedDate = date.toLocaleDateString("en-US", dateOption);
+            const formatedTime = date.toLocaleString("en-US", timeOption);
 
             //if today
             if (date.setHours(0, 0, 0, 0) == today.setHours(0, 0, 0, 0)) {
@@ -400,9 +483,9 @@ export default {
                 "bg-green-100": capacity - occupied >= 1
             };
         },
-        classVenti(val) {
+        classVenti(occupied, capacity) {
             return {
-                "bg-purple-100": val >= 1
+                "bg-purple-100":  capacity - occupied >= 1
             };
         },
         classHasToday(str) {

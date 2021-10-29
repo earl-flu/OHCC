@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\HealthFacility;
 use App\Models\History;
+use App\Models\User;
+use App\Notifications\OccupiedBedUpdated;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Notification;
 use Spatie\Activitylog\Models\Activity;
 
-class HealthFacilityController extends Controller
+class HealthFacilityController extends Controller 
 {
     /**
      * Display a listing of the resource.
@@ -80,7 +83,12 @@ class HealthFacilityController extends Controller
      */
     public function show(HealthFacility $health_facility)
     {
-        //
+        $user = Auth::user();
+        if (!$user->isSuperAdmin()) {
+            abort(403);
+        };
+
+        return view('health_facilities.show');
     }
 
     /**
@@ -93,22 +101,17 @@ class HealthFacilityController extends Controller
     {
         $user = Auth::user();
 
-        if (!$user->isSuperAdmin() && $user->healthFacility->id !== $health_facility->id) { // && !$user->isVaccinationAdmin()
+        if (!$user->healthFacility || $user->healthFacility->id !== $health_facility->id) {
             abort(403);
         };
 
-        $activities = Activity::where('subject_id', $health_facility->id)
-            ->where('log_name', 'health_facility_log')
-            ->orderBy('created_at', 'desc')
-            ->take(5)
-            ->get();
-
         $histories = History::where('log_name', HealthFacility::UPDATE_OCCUPIED)
+            ->where('health_facility_id', $user->healthFacility->id)
             ->orderBy('created_at', 'desc')
             ->take(5)
             ->get();
 
-        return view('health_facilities.edit', compact('health_facility', 'activities', 'histories'));
+        return view('health_facilities.edit', compact('health_facility', 'histories'));
     }
 
     /**
@@ -121,11 +124,13 @@ class HealthFacilityController extends Controller
     public function update(Request $request, HealthFacility $health_facility)
     {
         $user_id = Auth::user()->id;
+        $super_admins = User::where('super_admin', 1)->get();
 
         $validated = $request->validate([
             "occupied_ward" => "required|integer",
             "occupied_isolation" => "required|integer",
             "occupied_icu" => "required|integer",
+            "active_ventilator" => "required|integer",
         ]);
         $validated['updated_at'] = now();
 
@@ -133,6 +138,8 @@ class HealthFacilityController extends Controller
 
         $health_facility
             ->writeHistoryOccupied($user_id, $health_facility, HealthFacility::UPDATE_OCCUPIED);
+
+        Notification::send($super_admins, new OccupiedBedUpdated($health_facility));
 
         return redirect()->route('health-facilities.edit', $health_facility)->with('success', $health_facility->name . ' successfully updated!');
     }

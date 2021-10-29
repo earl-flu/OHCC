@@ -53,8 +53,12 @@ class HealthFacility extends Model
             'municipality_id' => $health_facility->municipality_id,
             'ward_capacity' => $health_facility->ward_capacity,
             'isolation_capacity' => $health_facility->isolation_capacity,
+            'occupied_ward' => $health_facility->occupied_ward,
+            'occupied_isolation' => $health_facility->occupied_isolation,
+            'occupied_icu' => $health_facility->occupied_icu,
             'icu_capacity' => $health_facility->icu_capacity,
-            'ventilator' => $health_facility->max_ventilator,
+            'max_ventilator' => $health_facility->max_ventilator,
+            'active_ventilator' => $health_facility->active_ventilator,
             'log_name' => $log_name,
 
         ]);
@@ -70,10 +74,14 @@ class HealthFacility extends Model
         $history = new History([
             'user_id' => $user_id,
             'municipality_id' => $health_facility->municipality_id,
+            'ward_capacity' => $health_facility->ward_capacity,
+            'isolation_capacity' => $health_facility->isolation_capacity,
+            'icu_capacity' => $health_facility->icu_capacity,
             'occupied_ward' => $health_facility->occupied_ward,
             'occupied_isolation' => $health_facility->occupied_isolation,
             'occupied_icu' => $health_facility->occupied_icu,
-            'ventilator' => $health_facility->max_ventilator,
+            'max_ventilator' => $health_facility->max_ventilator,
+            'active_ventilator' => $health_facility->active_ventilator,
             'log_name' => $log_name,
 
         ]);

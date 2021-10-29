@@ -18,8 +18,16 @@ class Municipality extends Model
     /**
      * Return total number of capacity e.g. icu_capacity
      */
-    public function getTotal($capacity_type)
+    public function getTotal($name)
     {
-        return $this->healthFacilities->sum($capacity_type);
+        return $this->healthFacilities->sum($name);
+    }
+
+    public function getVacant($capacity, $occupied)
+    {
+        $total_occupied = $this->getTotal($occupied);
+        $total_capacity = $this->getTotal($capacity);
+
+        return $total_capacity - $total_occupied;
     }
 }
