@@ -2,9 +2,9 @@
 
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\HealthFacilityController as ApiHealthFacilityController;
-use App\Http\Controllers\api\HistoryController;
+use App\Http\Controllers\Api\HistoryController;
 use App\Http\Controllers\Api\MunicipalitiesController;
-use App\Http\Controllers\api\SuperAdminHistoryController;
+use App\Http\Controllers\Api\SuperAdminHistoryController;
 use App\Http\Controllers\ChangePasswordController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\HealthFacilityController;

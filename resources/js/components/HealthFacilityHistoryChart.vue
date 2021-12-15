@@ -169,7 +169,7 @@ export default {
 
         mapHistoriesByOccupiedBed(isChecked, bedType) {
             // console.log("mapActivitiesByOccupiedBed");
-            let beds;
+            var beds;
             if (isChecked) {
                 beds = this.singleHistoryPerDay.map(h => h[bedType]).reverse();
                 return beds;
